@@ -66,7 +66,7 @@
                                             <th>Nombre</th>
                                             <th class="text-center">Precio Entrada</th>
                                             <th class="text-center">Precio Venta</th>
-                                            <th>Stock</th>
+                                            {{-- <th>Stock</th> --}}
                                             <th>Fecha creacion</th>
                                             <th>Fecha edición</th>
                                             <th></th>
@@ -79,7 +79,7 @@
                                             <td>{{ $value->name }}</td>
                                             <td class="text-center">$ {{ number_format($value->entry_price) }}</td>
                                             <td class="text-center">$ {{ number_format($value->sale_price) }}</td>
-                                            <td>{{ $value->stock }}</td>
+                                            {{-- <td>{{ $value->stock }}</td> --}}
                                             <td>{{ $value->created_at }}</td>
                                             <td>{{ $value->updated_at }}</td>
                                             <td class="td-actions text-right">

@@ -20,9 +20,12 @@ class CreateDocumentsTable extends Migration
                 $table->string('code')->nullable();
                 $table->bigInteger('id_user');
                 $table->integer('id_type');
-                $table->string('descrition')->nullable();
+                $table->string('description')->nullable();
                 $table->decimal('total', 12, 2);
                 $table->decimal('payment', 12, 2);
+                $table->date('date_document')->nullable();
+                $table->integer('id_status')->default('3');
+                $table->integer('id_sale')->nullable();
                 $table->timestamps();
                 $table->softDeletes();
 

@@ -18,18 +18,31 @@
                         </div>
                         <div class="col-sm-6">
                             <div class="btn-group pull-right">
-                                <input type="hidden" value="2020-11-25" id="semPasada">
-                                <input type="hidden" value="2020-12-09" id="sigPasada">
-                                <span class="btn btn-sm" onclick="kanban('semPasada')">&lt;</span>
+                                <form action="{{ route('sales.filter') }}" method="post">
+                                    @csrf
+                                    @if(!is_null($sAll))
+                                        <input type="hidden" name="all" value="all">
+                                    @endif
+                                    <input type="hidden" value="{{ $sDateAnt }}" name="dia">
+                                    <button class="btn btn-sm">&lt;</button>
+                                </form>
                                 <span class="btn btn-sm" unselectable="on" style="-moz-user-select: none;">
-                                    {{ date('Y-m-d')}}
+                                    {{ $sDate}}
                                 </span>
-                                <span class="btn btn-sm" onclick="kanban('sigPasada')">&gt;</span>
+                                <form action="{{ route('sales.filter') }}" method="post">
+                                    @csrf
+                                    @if(!is_null($sAll))
+                                        <input type="hidden" name="all" value="all">
+                                    @endif
+                                    <input type="hidden" value="{{ $sDateDes }}" name="dia">
+                                    <button class="btn btn-sm">&gt;</button>
+                                </form>
                             </div>
                             <form action="{{ route('sales.filter') }}" method="post">
                                 @csrf
                                 @if(is_null($sAll))
                                 <input type="hidden" name="all" value="all">
+                                <input type="hidden" value="{{ $sDate }}" name="dia">
                                 <button class="btn btn-sm">Mostrar Todas</button>
                                 <button type="button" class="btn btn-sm" onclick="location.reload()">Actualizar</button>
                                 @else

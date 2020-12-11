@@ -7,6 +7,8 @@ use App\Models\SalesTable;
 use App\Models\SalesTableDetail;
 use DB;
 use App\Models\SaleTablePay;
+use App\Models\Document;
+use App\Models\DocumentDetail;
 
 class SaleController extends Controller
 {
@@ -17,8 +19,9 @@ class SaleController extends Controller
      */
     public function index(Request $request)
     {
-        $date = date('Y-m-d H:m:s');
-        $hh = date('H');
+        $sDate = date('Y-m-d');
+        $sDateAnt = date("Y-m-d",strtotime($sDate."- 1 days"));
+        $sDateDes = date("Y-m-d",strtotime($sDate."+ 1 days"));
         // Join sub
         $oPay = SaleTablePay::select(DB::raw('sum(payment) as pay'),'id_sale')->groupBy('id_sale');
         $oTotal = SalesTableDetail::select(DB::raw('sum(price * quantity) as total'),'id_sale')->groupBy('id_sale');
@@ -30,21 +33,21 @@ class SaleController extends Controller
             $join->on('pay.id_sale','sales_tables.id_sale');
         })->leftJoinSub($oTotal,'total',function($join){
             $join->on('total.id_sale','sales_tables.id_sale');
-        })->when($hh < '5',function($q)use($hh){
-            $q->whereBetween('sales_tables.sale_date',[DB::raw("(CURRENT_TIMESTAMP - INTERVAL 1 DAY)"),DB::raw('DATE_ADD(now(), INTERVAL 5 HOUR)')]);
-        })->when($hh > '5',function($q)use($hh){
-            $q->whereBetween('sales_tables.sale_date',[DB::raw("(CURRENT_TIMESTAMP - INTERVAL 1 DAY) - INTERVAL CURRENT_TIME HOUR_SECOND"),DB::raw('DATE_ADD((CURRENT_TIMESTAMP) - INTERVAL CURRENT_TIME HOUR_SECOND, INTERVAL 24 HOUR )')]);
-        })
+        })->where('sales_tables.sale_date',DB::raw('cast(now() as date)'))
         ->orderBy('status','asc')->orderBy('id_sale','desc')
         ->get(['sales_tables.*',DB::raw('(total.total - pay.pay) as tota'),'total.total','pay.pay']);
-        return view('sales.index',compact('sales','sAll'));
+        return view('sales.index',compact('sales','sAll','sDate','sDateAnt','sDateDes'));
     }
     public function filter(Request $request)
     {
         $sAll = $request->all;
-        if(is_null($sAll)){
+        if(is_null($sAll) && is_null($request->dia)){
             return redirect()->route('sales.view');
         }
+        $sDate = (is_null($request->dia) ? date('Y-m-d') : $request->dia);
+        $sDateAnt = date("Y-m-d",strtotime($sDate."- 1 days"));
+        $sDateDes = date("Y-m-d",strtotime($sDate."+ 1 days"));
+
         $oPay = SaleTablePay::select(DB::raw('sum(payment) as pay'),'id_sale')->groupBy('id_sale');
 
         $oTotal = SalesTableDetail::select(DB::raw('sum(price * quantity) as total'),'id_sale')->groupBy('id_sale');
@@ -52,10 +55,16 @@ class SaleController extends Controller
             $join->on('pay.id_sale','sales_tables.id_sale');
         })->leftJoinSub($oTotal,'total',function($join){
             $join->on('total.id_sale','sales_tables.id_sale');
+        })->when(is_null($sAll),function($q){
+            $q->whereIn('status',[1,2]);
+        })->when(is_null($request->dia),function($q){
+            $q->where('sales_tables.sale_date',DB::raw('cast(now() as date)'));
+        })->when(!is_null($request->dia),function($q)use($request){
+            $q->where('sales_tables.sale_date',$request->dia);
         })
         ->orderBy('status','asc')->orderBy('id_sale','desc')
         ->get(['sales_tables.*',DB::raw('(total.total - pay.pay) as total')]);
-        return view('sales.index',compact('sales','sAll'));
+        return view('sales.index',compact('sales','sAll','sDate','sDateAnt','sDateDes'));
     }
 
     /**
@@ -67,6 +76,7 @@ class SaleController extends Controller
     {
         $validatedData = $request->validate([
             'name' => 'required|max:255',
+            'sale_date' => 'required|date'
         ]);
         try {
             // Consultamos si el nombre esta ocupado
@@ -78,7 +88,7 @@ class SaleController extends Controller
             }
             $oSale = new SalesTable();
             $oSale->name = $request->name;
-            $oSale->sale_date = DB::raw('CURRENT_TIMESTAMP');
+            $oSale->sale_date = $request->sale_date;
             $oSale->id_user = auth()->user()->id;
             $oSale->total = 0;
             $oSale->status = 1;
@@ -183,5 +193,145 @@ class SaleController extends Controller
             // dd($th);
             return redirect()->route('sales.show',['id' => $request->id_sale])->withErrors('No se pudo realizar el pago');
         }
+    }
+    public function saleDocument(Request $request){
+        $sale = SalesTable::find($request->id_sale);
+        $aMsg = array();
+        if(!is_null($sale)){
+
+            $saleTotal = SalesTableDetail::where('id_sale',$request->id_sale)->sum(DB::raw('price * quantity'));
+            $nPay = SaleTablePay::where('id_sale',$request->id_sale)->sum('payment');
+            // Si ya esta pago todo se cierra la venta
+            if($saleTotal <= $nPay){
+                $sale->status = '3';
+                $sale->save();
+            }
+            $saleDocument = Document::where('id_sale',$sale->id_sale)->first();
+            if(!is_null($saleDocument)){
+                $aMsg['error'] = 'Ya se finalizo la venta';
+                return response()->json($aMsg);
+            }
+            $document = new Document();
+            $document->description = $sale->name;
+            $document->total = (is_null($saleTotal) ? 0 : $saleTotal);
+            $document->payment = (is_null($nPay) ? 0 : $nPay);
+            $document->id_status = $sale->status;
+            $document->id_sale = $sale->id_sale;
+            $document->id_user = $sale->id_user;
+            $document->date_document = $sale->sale_date;
+            $document->id_type = '2';
+            $document->save();
+            $detail = SalesTableDetail::where('id_sale',$request->id_sale)->get();
+            $detail->each(function($item, $key)use($document){
+                $documentDetail = new DocumentDetail();
+                $documentDetail->id_product = $item->id_product;
+                $documentDetail->price = $item->price;
+                $documentDetail->quantity = $item->quantity;
+                $documentDetail->id_user = $item->id_user;
+                $documentDetail->id_document = $document->id_document;
+                $documentDetail->save();
+            });
+            $aMsg['success'] = 'Venta finalizada';
+            return response()->json($aMsg);
+        }
+        dd($request->all());
+    }
+    public function indexRun(){
+        return view('sales.run.index');
+    }
+    public function createRun(Request $request){
+        $validatedData = $request->validate([
+            'date_document' => 'required|date',
+            'id_product' => 'required',
+            'price' => 'required',
+            'quantity' => 'required',
+        ]);
+        try {
+            $oDocument = Document::find($request->id_document);
+            if(is_null($oDocument)){
+                $oDocument = new Document();
+            }
+            // $oDocument->code = strtoupper($request->code);
+            $oDocument->id_type = '2';
+            $oDocument->id_status = '1';
+            $oDocument->id_user = auth()->user()->id;
+            $oDocument->date_document = $request->date_document;
+            $oDocument->description = strtoupper($request->description);
+            $oDocument->total = (is_null($request->total) ? 0 : $request->total);
+            $oDocument->payment = (is_null($request->payment) ? 0 : $request->payment);
+            $oDocument->save();
+
+            $oDocumentDetail = new DocumentDetail();
+            $oDocumentDetail->id_document = $oDocument->id_document;
+            $oDocumentDetail->id_product = $request->id_product;
+            $oDocumentDetail->quantity = (is_null($request->quantity) ? 0 : $request->quantity);
+            $oDocumentDetail->price = (is_null($request->price) ? 0 : $request->price);
+            $oDocumentDetail->id_user = auth()->user()->id;
+            $oDocumentDetail->save();
+
+            $nTotal = DocumentDetail::where('id_document',$oDocument->id_document)->sum(DB::raw('price * quantity'));
+            $oDocument->total = $nTotal;
+            $oDocument->save();
+
+            return redirect()->route('sales.run.show',['id' => $oDocument->id_document])->with('success','Transaccion exitosa');
+        } catch (\Throwable $th) {
+            dd($th);
+            return back()->withErrors('No se pudo guardar el registro');
+        }
+    }
+    public function showRun($id){
+        $document = Document::find($id);
+        if(is_null($document)){
+            return redirect()->route('sales_run.view')->withErrors('Registro no encontrado');
+        }
+        $documentDetail = DocumentDetail::where('id_document',$id)
+        ->join('products as p','p.id_product','document_details.id_product')->get();
+        return view('sales.run.show',compact('document','documentDetail'));
+    }
+    public function payRun(Request $request){
+        $validatedData = $request->validate([
+            'id_document' => 'required',
+            // 'total_sale' => 'required|numeric',
+            'recibe' => 'required|numeric|min:1|not_in:0',
+        ]);
+        try {
+            // Consultamos el valor pagado
+            $document = Document::find($request->id_document);
+            if(is_null($document)){
+                return redirect()->route('sales_run.view')->withErrors('Registro no encontrado');
+            }
+            if($document->total <= $request->recibe){
+                $document->payment = $document->total;
+                $document->id_status = '3';
+                $document->save();
+            }else{
+                $document->payment = $request->recibe;
+                $document->id_status = '2';
+                $document->save();
+            }
+            return redirect()->route('sales.run.show',['id' => $document->id_document])->with('success','Pago recibido');
+        } catch (\Throwable $th) {
+            // dd($th);
+            return redirect()->route('sales.run.show',['id' => $document->id_document])->withErrors('No se pudo realizar el pago');
+        }
+    }
+    public function deleteDetailRun(Request $request){
+        $aMsg = array();
+        // Obtenemos el documento
+        $oDocumentDetail = DocumentDetail::find($request->id_auto);
+        $document = $oDocumentDetail->id_document;
+        $oDocumentDetail->delete();
+        // DocumentDetail::destroy($request->id_auto);
+        $oDocument = Document::find($document);
+        if(is_null($document)){
+            $aMsg['error'] = 'No se encontro un documento';
+            return response()->json($aMsg);
+        }
+        $nTotal = DocumentDetail::where('id_document',$oDocument->id_document)->sum(DB::raw('price * quantity'));
+        $oDocument->total = $nTotal;
+        $oDocument->payment = $nTotal;
+        $oDocument->save();
+        $aMsg['success'] = 'Registro eliminado';
+        return response()->json($aMsg);
     }
 }

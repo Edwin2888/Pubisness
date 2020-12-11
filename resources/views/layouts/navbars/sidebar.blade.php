@@ -2,21 +2,26 @@
     <div class="sidebar-wrapper ps">
         <div class="logo">
             <a href="#" class="simple-text logo-mini mblack">{{ __('BD') }}</a>
-            <a href="#" class="simple-text logo-normal mblack">{{ __('Black Dashboard') }}</a>
+            <a href="#" class="simple-text logo-normal mblack">{{ config('app.name', 'Black Dashboard') }}</a>
         </div>
         <ul class="nav">
+            @if(@Auth::user()->hasPermissionTo('product_permission'))
             <li @if ($pageSlug == 'products') class="active " @endif>
                 <a href="{{ route('products.view') }}" class="mblack">
                     <i class="tim-icons icon-atom"></i>
                     <p>{{ __('Productos') }}</p>
                 </a>
             </li>
+            @endif
+            @if(@Auth::user()->hasPermissionTo('sales_permission'))
             <li @if ($pageSlug == 'sales') class="active " @endif>
                 <a href="{{ route('sales.view') }}" class="mblack">
                     <i class="tim-icons icon-money-coins"></i>
-                    <p>{{ __('Ventas') }}</p>
+                    <p>{{ __('Ventas por Mesa') }}</p>
                 </a>
             </li>
+            @endif
+            @if(@Auth::user()->hasPermissionTo('income_permission'))
             {{-- icon-bag-16 --}}
             <li @if ($pageSlug == 'income') class="active " @endif>
                 <a href="{{ route('income.view') }}" class="mblack">
@@ -24,72 +29,31 @@
                     <p>{{ __('Ingreso de pedidos') }}</p>
                 </a>
             </li>
-            <li>
-                <a data-toggle="collapse" href="#laravel-examples" aria-expanded="false">
-                    <i class="fab fa-laravel" ></i>
-                    <p class="nav-link-text" >{{ __('Laravel Examples') }}</p>
-                    <b class="caret mt-1"></b>
-                </a>
-
-                <div class="collapse" id="laravel-examples">
-                    <ul class="nav pl-4">
-                        <li @if ($pageSlug == 'profile') class="active " @endif>
-                            <a href="">
-                                <i class="tim-icons icon-single-02"></i>
-                                <p>{{ __('User Profile') }}</p>
-                            </a>
-                        </li>
-                        <li @if ($pageSlug == 'users') class="active " @endif>
-                            <a href="">
-                                <i class="tim-icons icon-bullet-list-67"></i>
-                                <p>{{ __('User Management') }}</p>
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </li>
-            <li @if ($pageSlug == 'notifications') class="active " @endif>
-                <a href="">
-                    <i class="tim-icons icon-bell-55"></i>
-                    <p>{{ __('Notifications') }}</p>
+            @endif
+            @if(@Auth::user()->hasPermissionTo('sales_permission'))
+            <li @if ($pageSlug == 'sales_run') class="active " @endif>
+                <a href="{{ route('sales_run.view') }}" class="mblack">
+                    <i class="tim-icons icon-bag-16"></i>
+                    <p>{{ __('Venta rapida') }}</p>
                 </a>
             </li>
-            <li @if ($pageSlug == 'tables') class="active " @endif>
-                <a href="">
-                    <i class="tim-icons icon-puzzle-10"></i>
-                    <p>{{ __('Table List') }}</p>
+            @endif
+            @if(@Auth::user()->hasPermissionTo('document_permission'))
+            <li @if ($pageSlug == 'documents') class="active " @endif>
+                <a href="{{ route('documents.view') }}" class="mblack">
+                    <i class="tim-icons icon-notes"></i>
+                    <p>{{ __('Listado de Documentos') }}</p>
                 </a>
             </li>
-            <li @if ($pageSlug == 'typography') class="active " @endif>
-                <a href="">
-                    <i class="tim-icons icon-align-center"></i>
-                    <p>{{ __('Typography') }}</p>
+            @endif
+            @if(@Auth::user()->hasPermissionTo('inventory_permission'))
+            <li @if ($pageSlug == 'inventory') class="active " @endif>
+                <a href="{{ route('inventory.view') }}" class="mblack">
+                    <i class="tim-icons icon-settings"></i>
+                    <p>{{ __('Inventario') }}</p>
                 </a>
             </li>
-            <li @if ($pageSlug == 'rtl') class="active " @endif>
-                <a href="">
-                    <i class="tim-icons icon-world"></i>
-                    <p>{{ __('RTL Support') }}</p>
-                </a>
-            </li>
-            <li @if ($pageSlug == 'typography') class="active " @endif>
-                <a href="">
-                    <i class="tim-icons icon-align-center"></i>
-                    <p>{{ __('Typography') }}</p>
-                </a>
-            </li>
-            <li @if ($pageSlug == 'rtl') class="active " @endif>
-                <a href="">
-                    <i class="tim-icons icon-world"></i>
-                    <p>{{ __('RTL Support') }}</p>
-                </a>
-            </li>
-            <li @if ($pageSlug == 'typography') class="active " @endif>
-                <a href="">
-                    <i class="tim-icons icon-align-center"></i>
-                    <p>{{ __('Typography') }}</p>
-                </a>
-            </li>
+            @endif
         </ul>
     </div>
 </aside>

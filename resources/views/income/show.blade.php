@@ -1,5 +1,7 @@
 @extends('layouts.app', ['pageSlug' => 'income'])
-
+@section('css')
+{{-- <link href="{{ asset('black') }}/adminlte.min.css" rel="stylesheet" /> --}}
+@endsection
 @section('content')
     <div class="row">
         <div class="col-md-12">
@@ -41,28 +43,30 @@
                         <div class="col-md-9">
                             <form action="{{ route('income.new') }}" method="post">
                                 @csrf
+                                <input type="hidden" name="id_document" value="{{ $document->id_document }}">
+                                <input type="hidden" name="code" value="{{ $document->code }}">
                                 <div class="card card-chart">
                                     <div class="card-body">
                                         <div class="form-group{{ $errors->has('code') ? ' has-danger' : '' }}">
                                             <label>{{ __('Codigo Factura') }}</label>
-                                            <input type="text" name="code" class="form-control{{ $errors->has('code') ? ' is-invalid' : '' }}" placeholder="{{ __('Codigo') }}" value="{{ old('code', '') }}">
+                                            <input type="text" disabled class="form-control{{ $errors->has('code') ? ' is-invalid' : '' }}" placeholder="{{ __('Codigo') }}" value="{{ $document->code }}">
                                             @include('alerts.feedback', ['field' => 'code'])
                                         </div>
                                         <div class="form-group{{ $errors->has('date_document') ? ' has-danger' : '' }}">
                                             <label>{{ __('Fecha Factura') }}</label>
-                                            <input type="date" class="form-control{{ $errors->has('date_document') ? ' is-invalid' : '' }}" value="{{ old('date_document',date('Y-m-d')) }}" name="date_document">
+                                            <input type="date" class="form-control{{ $errors->has('date_document') ? ' is-invalid' : '' }}" value="{{ $document->date_document }}" name="date_document">
                                             @include('alerts.feedback', ['field' => 'date_document'])
                                         </div>
                                         <div class="form-group{{ $errors->has('description') ? ' has-danger' : '' }}">
                                             <label>{{ __('Descripción Pedido') }}</label>
-                                            <input type="text" name="description" class="form-control{{ $errors->has('description') ? ' is-invalid' : '' }}" placeholder="{{ __('Descripción') }}" value="{{ old('description', '') }}">
+                                            <input type="text" name="description" class="form-control{{ $errors->has('description') ? ' is-invalid' : '' }}" placeholder="{{ __('Descripción') }}" value="{{ $document->description }}">
                                             @include('alerts.feedback', ['field' => 'description'])
                                         </div>
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="form-group{{ $errors->has('id_product') ? ' has-danger' : '' }}">
                                                     <label>{{ __('Producto') }}</label>
-                                                    <input style="width: 100%" type="text" name="id_product" class="{{ $errors->has('description') ? ' is-invalid' : '' }} complete-product select-search-product">
+                                                    <input type="text" style="width: 100%" name="id_product" class="{{ $errors->has('description') ? ' is-invalid' : '' }} complete-product select-search-product">
                                                     @include('alerts.feedback', ['field' => 'id_product'])
                                                 </div>
                                             </div>
@@ -84,9 +88,40 @@
                                     </div>
                                 </div>
                                 <div class="card-footer">
-                                    <button type="submit" class="btn btn-fill btn-primary">{{ __('Guardar') }}</button>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <button type="submit" class="btn btn-fill btn-primary">{{ __('Agregar') }}</button>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <h1>$ {{ number_format($document->total) }}</h1>
+                                        </div>
+                                    </div>
                                 </div>
                             </form>
+                        </div>
+                    </div>
+                    <div class="row justify-content-md-center">
+                        <div class="col-md-9">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Codigo</th>
+                                        <th>Producto</th>
+                                        <th>Precio</th>
+                                        <th>Cantidad</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($documentDetail as $key => $value)
+                                        <tr>
+                                            <td>{{ $value->code }}</td>
+                                            <td>{{ $value->name }}</td>
+                                            <td>$ {{ number_format($value->price) }}</td>
+                                            <td>{{ $value->quantity }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -98,27 +133,27 @@
     <script>
         $(document).ready(function() {
             $().ready(function() {
-                // $("body").on('change','.complete-product',function(){
-                //     $.ajax({
-                //         type: "POST",
-                //         url: "{{ route('getProductPropities') }}",
-                //         data: {
-                //             "_token": "{{ csrf_token() }}",
-                //             id: this.value
-                //         },
-                //         dataType: "jSon",
-                //         success: function (response) {
-                //             if(response){
-                //                 changePrice();
-                //                 $("#price").text(numberFomat(response.sale_price));
-                //                 $("#precio").val(response.sale_price);
-                //             }
-                //             // $("#loading-open").removeClass('loading-head');
-                //         },error: function(){
-                //             // $("#loading-open").removeClass('loading-head');
-                //         }
-                //     });
-                // });
+                $("body").on('change','.complete-product',function(){
+                    $.ajax({
+                        type: "POST",
+                        url: "{{ route('getProductPropities') }}",
+                        data: {
+                            "_token": "{{ csrf_token() }}",
+                            id: this.value
+                        },
+                        dataType: "jSon",
+                        success: function (response) {
+                            if(response){
+                                changePrice();
+                                $("#price").text(numberFomat(response.sale_price));
+                                $("#precio").val(response.sale_price);
+                            }
+                            // $("#loading-open").removeClass('loading-head');
+                        },error: function(){
+                            // $("#loading-open").removeClass('loading-head');
+                        }
+                    });
+                });
                 $('.select-search-product').select2({
                     minimumInputLength: 3,
                     ajax: { // instead of writing the function to execute the request we use Select2's convenient helper

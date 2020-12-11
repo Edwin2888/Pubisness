@@ -18,7 +18,7 @@ class CreateSalesTablesTable extends Migration
             Schema::create('sales_tables', function (Blueprint $table) {
                 $table->bigIncrements('id_sale');
                 $table->string('name');
-                $table->datetime('sale_date');
+                $table->date('sale_date');
                 $table->string('descrition')->nullable();
                 $table->bigInteger('id_user');
                 $table->bigInteger('status');

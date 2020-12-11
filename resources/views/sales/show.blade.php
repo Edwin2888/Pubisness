@@ -1,6 +1,6 @@
 @extends('layouts.app', ['pageSlug' => 'sales'])
 @section('css')
-<link href="{{ asset('black') }}/adminlte.min.css" rel="stylesheet" />
+{{-- <link href="{{ asset('black') }}/adminlte.min.css" rel="stylesheet" /> --}}
 @endsection
 @section('content')
     <h2 class="card-title text-uppercase">
@@ -72,7 +72,7 @@
             </form>
         </div>
         <div class="col-md-4">
-            <form action="" method="post">
+            {{-- <form action="" method="post"> --}}
                 <label>Saldo Pendiente: </label>
                 <h1 style="font-size: 60px">$ {{ number_format(($saleTotal - $nPay < 0 ? 0 : $saleTotal - $nPay) ) }}</h1>
                 <div class="row">
@@ -83,7 +83,7 @@
                         <label>Pago reportado: </label><h1 style="font-size: 30px">$ {{ number_format($nPay) }}</h1>
                     </div>
                 </div>
-            </form>
+            {{-- </form> --}}
         </div>
     </div>
     <hr>
@@ -110,10 +110,10 @@
                             <label>Pagar:</label><br>
                             <button class="btn">PAGAR</button>
                         </div>
-                        @if($saleTotal - $nPay < 1)
+                        @if($saleTotal - $nPay < 1 && $sale->status <> '3')
                             <div class="col-md-6">
                                 <label>Cerrar cuenta:</label><br>
-                                <button class="btn btn-success" type="button">FINALIZAR</button>
+                                <button class="btn btn-success" onclick="saveDocument('{{ $sale->id_sale }}')" type="button">FINALIZAR</button>
                             </div>
                         @endif
                     </div>
@@ -167,6 +167,27 @@
 @section('js')
     {{-- <script src="{{ asset('black') }}/js/plugins/chartjs.min.js"></script> --}}
     <script>
+        function saveDocument(_idSale){
+            $.ajax({
+                type: "POST",
+                url: "{{ route('sales.document') }}",
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    id_sale: _idSale
+                },
+                dataType: "jSon",
+                success: function (response) {
+                    if(response.error){
+                        alert(response.error);
+                    }
+                    if(response.success){
+                        location.reload();
+                    }
+                },error: function(){
+                    alert('Error');
+                }
+            });
+        }
         function changePrice(){
             let _price = $("#precio").val();
             if(!_price){
