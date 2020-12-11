@@ -81,6 +81,7 @@
                                             <td class="text-center">$ {{ number_format($value->sale_price) }}</td>
                                             {{-- <td>{{ $value->stock }}</td> --}}
                                             <td>{{ $value->created_at }}</td>
+
                                             <td>{{ $value->updated_at }}</td>
                                             <td class="td-actions text-right">
                                                 <button type="button" rel="tooltip" title="" class="btn btn-link" data-original-title="Edit Task">
