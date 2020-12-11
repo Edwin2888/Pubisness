@@ -32,33 +32,33 @@ class UsersTableSeeder extends Seeder
         $user = User::create([
             'id' => 1,
             'name' => 'Edwin Holguin',
-            'email' => 'edwin@pro.com',
+            'email' => 'edwin.holguin@pubbisness.com',
             'email_verified_at' => now(),
-            'password' => Hash::make('edwin'),
+            'password' => Hash::make('42888Edwin'),
             'created_at' => now(),
             'updated_at' => now()
         ]);
         $user->assignRole('Admin');
-        for($i = 0; $i < 1; $i++){
-            DB::table('products')->insert([
-                'name' => 'COCA COLA MINI',
-                'stock' => rand (0 ,100),
-                'sale_price' => rand (0 ,3000),
-                'entry_price' => rand (0 ,3000),
-                'code' => 'ABC123'.$i,
-                'created_at' => now(),
-                'updated_at' => now()
-            ]);
-            DB::table('products')->insert([
-                'name' => 'COCA COLA 350',
-                'stock' => rand (0 ,100),
-                'sale_price' => rand (0 ,3000),
-                'entry_price' => rand (0 ,3000),
-                'code' => 'ABC12'.$i,
-                'created_at' => now(),
-                'updated_at' => now()
-            ]);
-        }
+        // for($i = 0; $i < 1; $i++){
+        //     DB::table('products')->insert([
+        //         'name' => 'COCA COLA MINI',
+        //         'stock' => rand (0 ,100),
+        //         'sale_price' => rand (0 ,3000),
+        //         'entry_price' => rand (0 ,3000),
+        //         'code' => 'ABC123'.$i,
+        //         'created_at' => now(),
+        //         'updated_at' => now()
+        //     ]);
+        //     DB::table('products')->insert([
+        //         'name' => 'COCA COLA 350',
+        //         'stock' => rand (0 ,100),
+        //         'sale_price' => rand (0 ,3000),
+        //         'entry_price' => rand (0 ,3000),
+        //         'code' => 'ABC12'.$i,
+        //         'created_at' => now(),
+        //         'updated_at' => now()
+        //     ]);
+        // }
         DB::table('status_sales')->insert([
             'name' => 'SIN PAGAR'
         ]);
