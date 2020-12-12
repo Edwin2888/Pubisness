@@ -22,12 +22,25 @@ class UsersTableSeeder extends Seeder
         Permission::create(['name' => 'income_permission']);
         Permission::create(['name' => 'document_permission']);
         Permission::create(['name' => 'inventory_permission']);
-        $role = Role::create(['name' => 'admin']);
+        Permission::create(['name' => 'roles_permission']);
+        $role = Role::create(['name' => 'owner']);
         $role->givePermissionTo('sales_permission');
         $role->givePermissionTo('product_permission');
         $role->givePermissionTo('income_permission');
         $role->givePermissionTo('document_permission');
         $role->givePermissionTo('inventory_permission');
+        $role->givePermissionTo('roles_permission');
+        $role = Role::create(['name' => 'employee']);
+        $role->givePermissionTo('product_permission');
+        $role->givePermissionTo('sales_permission');
+        $role->givePermissionTo('income_permission');
+        $role->givePermissionTo('document_permission');
+        $role = Role::create(['name' => 'admin']);
+        $role->givePermissionTo('inventory_permission');
+        $role->givePermissionTo('document_permission');
+        $role->givePermissionTo('product_permission');
+        $role->givePermissionTo('income_permission');
+        $role->givePermissionTo('sales_permission');
         // $role->hasPermissionTo('sales_permission');
         $user = User::create([
             'id' => 1,
@@ -38,7 +51,7 @@ class UsersTableSeeder extends Seeder
             'created_at' => now(),
             'updated_at' => now()
         ]);
-        $user->assignRole('Admin');
+        $user->assignRole('owner');
         // for($i = 0; $i < 1; $i++){
         //     DB::table('products')->insert([
         //         'name' => 'COCA COLA MINI',

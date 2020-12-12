@@ -51,11 +51,17 @@
         @yield('css')
         {{-- <link href="{{ asset('black') }}/adminlte.min.css" rel="stylesheet" /> --}}
     </head>
-    <body class="{{ $class ?? 'sidebar-mini perfect-scrollbar-on' }}">
+    <body class="{{ $class ?? 'sidebar-mini' }}">
         @auth()
             <div class="wrapper">
+                <div class="navbar-minimize-fixed" style="opacity: 1;">
+                    <button class="minimize-sidebar btn btn-link btn-just-icon">
+                      <i class="tim-icons icon-align-center visible-on-sidebar-regular text-muted"></i>
+                      <i class="tim-icons icon-bullet-list-67 visible-on-sidebar-mini text-muted"></i>
+                    </button>
+                </div>
                     @include('layouts.navbars.sidebar')
-                <div class="main-panel">
+                <div class="main-panel ps ps--active-y">
                     @include('layouts.navbars.navbar')
 
                     <div class="content">

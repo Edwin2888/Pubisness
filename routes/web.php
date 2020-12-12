@@ -73,4 +73,11 @@ Route::group(['middleware' => 'auth'], function() {
             Route::get('/','InventoryController@index')->name('inventory.view');
         });
     });
+
+    Route::group(['middleware' => ['permission:roles_permission']], function() {
+        Route::prefix('/roles')->group(function () {
+            Route::get('/','RolController@index')->name('roles.view');
+            Route::post('/filter','RolController@assign')->name('roles.assign');
+        });
+    });
 });

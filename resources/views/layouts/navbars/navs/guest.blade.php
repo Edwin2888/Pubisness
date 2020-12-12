@@ -19,12 +19,12 @@
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
                     <a href="{{ route('home') }}" class="nav-link text-primary">
-                        <i class="tim-icons icon-minimal-left"></i> {{ __('Back to Dashboard') }}
+                        <i class="tim-icons icon-minimal-left"></i> {{ __('Atras') }}
                     </a>
                 </li>
                 <li class="nav-item ">
                     <a href="{{ route('register') }}" class="nav-link">
-                        <i class="tim-icons icon-laptop"></i> {{ __('Register') }}
+                        <i class="tim-icons icon-laptop"></i> {{ __('Registrarse') }}
                     </a>
                 </li>
                 <li class="nav-item ">

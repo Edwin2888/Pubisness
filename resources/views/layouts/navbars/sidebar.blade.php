@@ -1,5 +1,5 @@
-<aside class="sidebar">
-    <div class="sidebar-wrapper ps">
+<div class="sidebar">
+    <div class="sidebar-wrapper ps ps--active-x ps--active-y">
         <div class="logo">
             <a href="#" class="simple-text logo-mini mblack">{{ __('BD') }}</a>
             <a href="#" class="simple-text logo-normal mblack">{{ config('app.name', 'Black Dashboard') }}</a>
@@ -56,4 +56,4 @@
             @endif
         </ul>
     </div>
-</aside>
+</div>
