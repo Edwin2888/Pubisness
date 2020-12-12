@@ -87,7 +87,7 @@
         </div>
     </div>
     <hr>
-    @if($saleTotal > 0)
+    @if($saleTotal > 0 && $sale->status <> '3')
         <form action="{{ route('sales.pay') }}" method="post">
             <div class="row">
                 @csrf
@@ -211,6 +211,9 @@
             }
             let total = $("#totalSale").val();
             let vuelto = abono - total;
+            if(vuelto < 0){
+                vuelto = 0;
+            }
             $("#abonoS").text(numberFomat(abono));
             $("#vueltoS").text(numberFomat(vuelto));
         }

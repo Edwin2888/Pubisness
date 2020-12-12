@@ -33,7 +33,7 @@ class SaleController extends Controller
             $join->on('pay.id_sale','sales_tables.id_sale');
         })->leftJoinSub($oTotal,'total',function($join){
             $join->on('total.id_sale','sales_tables.id_sale');
-        })->where('sales_tables.sale_date',DB::raw('cast(now() as date)'))
+        })->where('sales_tables.sale_date',$sDate)
         ->orderBy('status','asc')->orderBy('id_sale','desc')
         ->get(['sales_tables.*',DB::raw('(total.total - pay.pay) as tota'),'total.total','pay.pay']);
         return view('sales.index',compact('sales','sAll','sDate','sDateAnt','sDateDes'));
@@ -58,7 +58,7 @@ class SaleController extends Controller
         })->when(is_null($sAll),function($q){
             $q->whereIn('status',[1,2]);
         })->when(is_null($request->dia),function($q){
-            $q->where('sales_tables.sale_date',DB::raw('cast(now() as date)'));
+            $q->where('sales_tables.sale_date',date('Y-m-d'));
         })->when(!is_null($request->dia),function($q)use($request){
             $q->where('sales_tables.sale_date',$request->dia);
         })
@@ -81,7 +81,7 @@ class SaleController extends Controller
         try {
             // Consultamos si el nombre esta ocupado
             $oSales = SalesTable::where('name',$request->name)
-            ->where(DB::raw('cast(sale_date as date)'),DB::raw('cast(now() as date)'))
+            ->where(DB::raw('cast(sale_date as date)'),date('Y-m-d'))
             ->whereIn('status',['1','2'])->first();
             if(!is_null($oSales)){
                 return redirect()->route('sales.view')->withErrors('La mesa '.$request->name.' esta en uso actualmente');

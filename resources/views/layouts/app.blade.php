@@ -87,42 +87,46 @@
                 </div>
             </div>
         @endauth
-        <div class="fixed-plugin">
-            <div class="dropdown show-dropdown">
-                <a href="#" data-toggle="dropdown">
-                    <i class="fa fa-beer fa-2x"> </i>
-                </a>
-                <ul class="dropdown-menu">
-                    <a href="javascript:void(0)" class="switch-trigger background-color">
-                        <form action="{{ route('sales.new') }}" method="post">
-                            @csrf
-                            <li class="header-title"> Nueva venta</li>
-                            <li class="adjustments-line">
-                                <div class="badge-colors text-center">
-                                    <span class="badge filter badge-primary active" data-color="primary"></span>
-                                    <span class="badge filter badge-info" data-color="blue"></span>
-                                    <span class="badge filter badge-success" data-color="green"></span>
-                                </div>
-                                <div class="clearfix"></div>
-                            </li>
-                            <li class="button-container">
-                                <div class="form-group{{ $errors->has('name') ? ' has-danger' : '' }}">
-                                    <label>{{ __('Fecha de venta') }}</label>
-                                    <input type="date" name="sale_date" class="form-control{{ $errors->has('sale_date') ? ' is-invalid' : '' }}" value="{{ old('sale_date', date('Y-m-d')) }}"><br>
-                                    <label>{{ __('Nombre Mesa') }}</label>
-                                    <input type="text" name="name" class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" placeholder="{{ __('Name') }}" value="{{ old('name', '') }}">
-                                    @include('alerts.feedback', ['field' => 'name'])
-                                </div>
-                            </li>
-                            <li class="header-title">Acceso rápido!</li>
-                            <li class="button-container text-center">
-                                <button class="btn btn-round btn-info"><i class="fa fa-save"></i> Crear</button>
-                            </li>
-                        </form>
-                    </a>
-                </ul>
-            </div>
-        </div>
+        @if(@Auth::user())
+            @if(@Auth::user()->hasPermissionTo('roles_permission'))
+                <div class="fixed-plugin">
+                    <div class="dropdown show-dropdown">
+                        <a href="#" data-toggle="dropdown">
+                            <i class="fa fa-beer fa-2x"> </i>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <a href="javascript:void(0)" class="switch-trigger background-color">
+                                <form action="{{ route('sales.new') }}" method="post">
+                                    @csrf
+                                    <li class="header-title"> Nueva venta</li>
+                                    <li class="adjustments-line">
+                                        <div class="badge-colors text-center">
+                                            <span class="badge filter badge-primary active" data-color="primary"></span>
+                                            <span class="badge filter badge-info" data-color="blue"></span>
+                                            <span class="badge filter badge-success" data-color="green"></span>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                    </li>
+                                    <li class="button-container">
+                                        <div class="form-group{{ $errors->has('name') ? ' has-danger' : '' }}">
+                                            <label>{{ __('Fecha de venta') }}</label>
+                                            <input type="date" name="sale_date" class="form-control{{ $errors->has('sale_date') ? ' is-invalid' : '' }}" value="{{ old('sale_date', date('Y-m-d')) }}"><br>
+                                            <label>{{ __('Nombre Mesa') }}</label>
+                                            <input type="text" name="name" class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" placeholder="{{ __('Name') }}" value="{{ old('name', '') }}">
+                                            @include('alerts.feedback', ['field' => 'name'])
+                                        </div>
+                                    </li>
+                                    <li class="header-title">Acceso rápido!</li>
+                                    <li class="button-container text-center">
+                                        <button class="btn btn-round btn-info"><i class="fa fa-save"></i> Crear</button>
+                                    </li>
+                                </form>
+                            </a>
+                        </ul>
+                    </div>
+                </div>
+            @endif
+        @endif
 
         <script src="{{ asset('black') }}/js/core/jquery.min.js"></script>
         <script src="{{ asset('black') }}/js/core/popper.min.js"></script>

@@ -22,7 +22,7 @@ class DocumentController extends Controller
         $sDateIni = date('Y-m-d');
         $sDateFin = date('Y-m-d');
         $types = TypeDocument::get();
-        $oDocument = Document::where('date_document',DB::raw('cast(now() as date)'))
+        $oDocument = Document::where('date_document',date('Y-m-d'))
         ->join('type_documents as t','t.id_type','documents.id_type')
         ->join('status_sales as s','s.id_status','documents.id_status')
         ->get([
@@ -41,7 +41,7 @@ class DocumentController extends Controller
         })->when(is_null($request->fecha_ini) && !is_null($request->fecha_fin), function($q)use($request){
             $q->where('date_document',$request->fecha_fin);
         })->when(is_null($request->fecha_ini) && is_null($request->fecha_fin), function($q)use($request){
-            $q->where('date_document',DB::raw('cast(now() as date)'));
+            $q->where('date_document',date('Y-m-d'));
         })->when(!is_null($request->detalle),function($q){
             $q->leftJoin('document_details as d','d.id_document','documents.id_document')
             ->leftJoin('products as p','p.id_product','d.id_product');
