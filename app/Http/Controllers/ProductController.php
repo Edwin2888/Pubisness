@@ -29,16 +29,24 @@ class ProductController extends Controller
             'name' => 'required|max:255',
         ]);
         try {
-            $oProduct = new Product();
-            $oProduct->name = strtoupper($request->name);
-            $oProduct->sale_price = (is_null($request->sale_price) ? 0 : $request->sale_price);
-            $oProduct->entry_price = (is_null($request->entry_price) ? 0 : $request->entry_price);
-            $oProduct->save();
-            $oProduct->code = 'COD'.$oProduct->id_product;
-            $oProduct->save();
-            return back()->with('success','Registro guardado exitosamente');
+            if(is_null($request->id_product)){
+                $oProduct = new Product();
+                $oProduct->name = strtoupper($request->name);
+                $oProduct->sale_price = (is_null($request->sale_price) ? 0 : $request->sale_price);
+                $oProduct->entry_price = (is_null($request->entry_price) ? 0 : $request->entry_price);
+                $oProduct->save();
+                $oProduct->code = 'COD'.$oProduct->id_product;
+                $oProduct->save();
+            }else{
+                $oProduct = Product::find($request->id_product);
+                $oProduct->name = strtoupper($request->name);
+                $oProduct->sale_price = (is_null($request->sale_price) ? 0 : $request->sale_price);
+                $oProduct->entry_price = (is_null($request->entry_price) ? 0 : $request->entry_price);
+                $oProduct->save();
+            }
+            return redirect()->route('products.view')->with('success','Registro guardado exitosamente');
         } catch (\Throwable $th) {
-            return back()->withErrors('No se pudo guardar el registro');
+            return redirect()->route('products.view')->withErrors('No se pudo guardar el registro');
         }
     }
 
@@ -72,7 +80,8 @@ class ProductController extends Controller
      */
     public function edit($id)
     {
-        //
+        $oProduct = Product::find($id);
+        return view('products.edit',compact('oProduct'));
     }
 
     /**

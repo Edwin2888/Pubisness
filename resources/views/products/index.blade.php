@@ -69,7 +69,7 @@
                                             {{-- <th>Stock</th> --}}
                                             <th>Fecha creacion</th>
                                             <th>Fecha edición</th>
-                                            <th></th>
+                                            <th class="text-right"><i class="tim-icons icon-pencil"></i></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -84,7 +84,7 @@
 
                                             <td>{{ $value->updated_at }}</td>
                                             <td class="td-actions text-right">
-                                                <button type="button" rel="tooltip" title="" class="btn btn-link" data-original-title="Edit Task">
+                                                <button type="button" rel="tooltip" title="Editar" class="btn btn-link" onclick="location.href='{{ route('products.edit',$value->id_product) }}'">
                                                     <i class="tim-icons icon-pencil"></i>
                                                 </button>
                                             </td>

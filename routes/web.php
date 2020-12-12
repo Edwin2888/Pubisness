@@ -45,6 +45,7 @@ Route::group(['middleware' => 'auth'], function() {
         Route::prefix('/products')->group(function () {
             Route::get('/','ProductController@index')->name('products.view');
             Route::get('/autocomplete','ProductController@autocomplete');
+            Route::get('/edit/{id}','ProductController@edit')->name('products.edit');
             Route::post('/','ProductController@create')->name('products.new');
             Route::post('/propities','ProductController@propities')->name('getProductPropities');
             // Route::get('/', function(){

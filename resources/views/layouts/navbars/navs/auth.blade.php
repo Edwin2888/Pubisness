@@ -25,10 +25,40 @@
                     <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
                         <div class="notification d-none d-lg-block d-xl-block"></div>
                         <i class="tim-icons icon-sound-wave"></i>
-                        <p class="d-lg-none"> {{ __('Notifications') }} </p>
+                        <p class="d-lg-none"> {{ __('Opciones') }} </p>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-right dropdown-navbar">
-
+                        @if(@Auth::user()->hasPermissionTo('product_permission'))
+                        <li class="nav-link">
+                            <a href="{{ route('products.view') }}" class="nav-item dropdown-item">{{ __('Productos') }}</a>
+                        </li>
+                        @endif
+                        @if(@Auth::user()->hasPermissionTo('sales_permission'))
+                        <li class="nav-link">
+                            <a href="{{ route('sales.view') }}" class="nav-item dropdown-item">{{ __('Ventas por Mesa') }}</a>
+                        </li>
+                        @endif
+                        @if(@Auth::user()->hasPermissionTo('income_permission'))
+                        {{-- icon-bag-16 --}}
+                        <li class="nav-link">
+                            <a href="{{ route('income.view') }}" class="nav-item dropdown-item">{{ __('Ingreso de pedidos') }}</a>
+                        </li>
+                        @endif
+                        @if(@Auth::user()->hasPermissionTo('sales_permission'))
+                        <li class="nav-link">
+                            <a href="{{ route('sales_run.view') }}" class="nav-item dropdown-item">{{ __('Venta rapida') }}</a>
+                        </li>
+                        @endif
+                        @if(@Auth::user()->hasPermissionTo('document_permission'))
+                        <li class="nav-link">
+                            <a href="{{ route('documents.view') }}" class="nav-item dropdown-item">{{ __('Listado de Documentos') }}</a>
+                        </li>
+                        @endif
+                        @if(@Auth::user()->hasPermissionTo('inventory_permission'))
+                        <li class="nav-link">
+                            <a href="{{ route('inventory.view') }}" class="nav-item dropdown-item">{{ __('Inventario') }}</a>
+                        </li>
+                        @endif
                     </ul>
                 </li>
                 <li class="dropdown nav-item">
