@@ -46,7 +46,7 @@
                                         <tr>
                                             <td>{{ $value->email }}</td>
                                             <td>{{ $value->name }}</td>
-                                            <td>{{ (isset($value->roles()->first()->name) ? '' : $value->roles()->first()->name) }}</td>
+                                            <td>{{ (isset($value->roles()->first()->name) ? $value->roles()->first()->name : '' ) }}</td>
                                             <td>
                                                 <form action="{{ route('roles.assign') }}" method="POST">
                                                     <input type="hidden" value="{{ $value->id }}" name="id_user">
@@ -56,7 +56,7 @@
                                                             <select name="rol" class="form-control">
                                                                 <option value="">-- Seleccionar --</option>
                                                                 @foreach($oRoles as $item)
-                                                                    @if($item->id == (isset($value->roles()->first()->id) ? '' : $value->roles()->first()->id))
+                                                                    @if($item->id == (!isset($value->roles()->first()->id) ? '' : $value->roles()->first()->id))
                                                                     <option selected="selected" value="{{ $item->id }}">{{ $item->name }}</option>
                                                                     @else
                                                                     <option value="{{ $item->name }}">{{ $item->name }}</option>
