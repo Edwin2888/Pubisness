@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Models\ExpenseType;
 
 class ProductController extends Controller
 {
@@ -15,7 +16,8 @@ class ProductController extends Controller
     public function index()
     {
         $products = Product::get();
-        return view('products.index',compact('products'));
+        $oTypes = ExpenseType::get();
+        return view('products.index',compact('products','oTypes'));
     }
 
     /**
@@ -34,6 +36,7 @@ class ProductController extends Controller
                 $oProduct->name = strtoupper($request->name);
                 $oProduct->sale_price = (is_null($request->sale_price) ? 0 : $request->sale_price);
                 $oProduct->entry_price = (is_null($request->entry_price) ? 0 : $request->entry_price);
+                $oProduct->id_type_expense = $request->id_type_expense;
                 $oProduct->save();
                 $oProduct->code = 'COD'.$oProduct->id_product;
                 $oProduct->save();
@@ -42,6 +45,7 @@ class ProductController extends Controller
                 $oProduct->name = strtoupper($request->name);
                 $oProduct->sale_price = (is_null($request->sale_price) ? 0 : $request->sale_price);
                 $oProduct->entry_price = (is_null($request->entry_price) ? 0 : $request->entry_price);
+                $oProduct->id_type_expense = $request->id_type_expense;
                 $oProduct->save();
             }
             return redirect()->route('products.view')->with('success','Registro guardado exitosamente');
@@ -80,8 +84,9 @@ class ProductController extends Controller
      */
     public function edit($id)
     {
+        $oTypes = ExpenseType::get();
         $oProduct = Product::find($id);
-        return view('products.edit',compact('oProduct'));
+        return view('products.edit',compact('oProduct','oTypes'));
     }
 
     /**

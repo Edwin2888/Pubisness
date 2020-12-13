@@ -31,7 +31,7 @@ class InventoryController extends Controller
             $q->on('products.id_product','income.id_product');
         })->leftJoinSub($sqlSale,'sale',function($q){
             $q->on('products.id_product','sale.id_product');
-        })
+        })->whereNull('products.id_type_expense')
         ->select('products.name','sale.cant as ventas','income.cant as compras')
         ->get();
 

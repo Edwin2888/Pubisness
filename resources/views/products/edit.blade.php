@@ -7,7 +7,7 @@
                 <div class="card-header ">
                     <div class="row">
                         <div class="col-sm-6 text-left">
-                            <h2 class="card-title">Productos</h2>
+                            <h2 class="card-title">Editar Productos</h2>
                         </div>
                         <div class="col-sm-6">
 
@@ -38,10 +38,25 @@
                                     <input type="number" min="0" name="sale_price" class="form-control{{ $errors->has('sale_price') ? ' is-invalid' : '' }}" placeholder="{{ __('Precio Venta') }}" value="{{ old('sale_price', $oProduct->sale_price) }}">
                                     @include('alerts.feedback', ['field' => 'price'])
                                 </div>
+                                <div class="form-group{{ $errors->has('id_type_expense') ? ' has-danger' : '' }}">
+                                    <label>{{ __('Aplica gasto') }}</label>
+                                    <select name="id_type_expense" class="form-control{{ $errors->has('id_type_expense') ? ' is-invalid' : '' }}">
+                                        <option value="">NO</option>
+                                        @foreach($oTypes as $item)
+                                        @if($item->id_type_expense == $oProduct->id_type_expense)
+                                        <option selected="selected" value="{{ $item->id_type_expense }}">{{ $item->name }}</option>
+                                        @else
+                                        <option value="{{ $item->id_type_expense }}">{{ $item->name }}</option>
+                                        @endif
+                                        @endforeach
+                                    </select>
+                                    @include('alerts.feedback', ['field' => 'id_type_expense'])
+                                </div>
                             </div>
                         </div>
                         <div class="card-footer">
                             <button type="submit" class="btn btn-fill btn-primary">{{ __('Guardar') }}</button>
+                            <button type="button" class="btn" onclick="location.href='{{ route('products.view') }}'">Cancelar</button>
                         </div>
                     </form>
                 </div>

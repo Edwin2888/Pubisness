@@ -81,7 +81,7 @@ class SaleController extends Controller
         try {
             // Consultamos si el nombre esta ocupado
             $oSales = SalesTable::where('name',$request->name)
-            ->where(DB::raw('cast(sale_date as date)'),date('Y-m-d'))
+            ->where('sale_date',date('Y-m-d'))
             ->whereIn('status',['1','2'])->first();
             if(!is_null($oSales)){
                 return redirect()->route('sales.view')->withErrors('La mesa '.$request->name.' esta en uso actualmente');
@@ -242,9 +242,9 @@ class SaleController extends Controller
     public function createRun(Request $request){
         $validatedData = $request->validate([
             'date_document' => 'required|date',
-            'id_product' => 'required',
-            'price' => 'required',
-            'quantity' => 'required',
+            // 'id_product' => 'required',
+            // 'price' => 'required',
+            // 'quantity' => 'required',
         ]);
         try {
             $oDocument = Document::find($request->id_document);
@@ -261,13 +261,20 @@ class SaleController extends Controller
             $oDocument->payment = (is_null($request->payment) ? 0 : $request->payment);
             $oDocument->save();
 
-            $oDocumentDetail = new DocumentDetail();
-            $oDocumentDetail->id_document = $oDocument->id_document;
-            $oDocumentDetail->id_product = $request->id_product;
-            $oDocumentDetail->quantity = (is_null($request->quantity) ? 0 : $request->quantity);
-            $oDocumentDetail->price = (is_null($request->price) ? 0 : $request->price);
-            $oDocumentDetail->id_user = auth()->user()->id;
-            $oDocumentDetail->save();
+            if(!is_null($request->id_product)){
+                $validatedData = $request->validate([
+                    'id_product' => 'required',
+                    'price' => 'required',
+                    'quantity' => 'required',
+                ]);
+                $oDocumentDetail = new DocumentDetail();
+                $oDocumentDetail->id_document = $oDocument->id_document;
+                $oDocumentDetail->id_product = $request->id_product;
+                $oDocumentDetail->quantity = (is_null($request->quantity) ? 0 : $request->quantity);
+                $oDocumentDetail->price = (is_null($request->price) ? 0 : $request->price);
+                $oDocumentDetail->id_user = auth()->user()->id;
+                $oDocumentDetail->save();
+            }
 
             $nTotal = DocumentDetail::where('id_document',$oDocument->id_document)->sum(DB::raw('price * quantity'));
             $oDocument->total = $nTotal;
@@ -331,6 +338,24 @@ class SaleController extends Controller
         $oDocument->total = $nTotal;
         $oDocument->payment = $nTotal;
         $oDocument->save();
+        $aMsg['success'] = 'Registro eliminado';
+        return response()->json($aMsg);
+    }
+    public function deleteDetail(Request $request){
+        $aMsg = array();
+        // Obtenemos el documento
+        $oSaleDetail = SalesTableDetail::find($request->id_auto);
+        $sale = $oSaleDetail->id_sale;
+        $oSaleDetail->delete();
+        // DocumentDetail::destroy($request->id_auto);
+        $oSale = SalesTable::find($sale);
+        if(is_null($oSale)){
+            $aMsg['error'] = 'No se encontro una venta';
+            return response()->json($aMsg);
+        }
+        $nTotal = SalesTableDetail::where('id_sale',$oSale->id_sale)->sum(DB::raw('price * quantity'));
+        $oSale->total = $nTotal;
+        $oSale->save();
         $aMsg['success'] = 'Registro eliminado';
         return response()->json($aMsg);
     }

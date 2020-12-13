@@ -59,6 +59,11 @@
                             <a href="{{ route('inventory.view') }}" class="nav-item dropdown-item">{{ __('Inventario') }}</a>
                         </li>
                         @endif
+                        @if(@Auth::user()->hasPermissionTo('gastos_permission'))
+                        <li class="nav-link">
+                            <a href="{{ route('expense.view') }}" class="nav-item dropdown-item">{{ __('Gastos') }}</a>
+                        </li>
+                        @endif
                     </ul>
                 </li>
                 <li class="dropdown nav-item">
@@ -78,9 +83,14 @@
                             <a href="{{ route('roles.view') }}" class="nav-item dropdown-item">{{ __('Role y Permisos') }}</a>
                         </li>
                         @endif
+                        @if(@Auth::user()->hasPermissionTo('gastos_permission'))
+                        <li class="nav-link">
+                            <a href="{{ route('expense_type.view') }}" class="nav-item dropdown-item">{{ __('Tipos de gasto') }}</a>
+                        </li>
+                        @endif
                         <li class="dropdown-divider"></li>
                         <li class="nav-link">
-                            <a href="{{ route('logout') }}" class="nav-item dropdown-item" onclick="event.preventDefault();  document.getElementById('logout-form').submit();">{{ __('Log out') }}</a>
+                            <a href="{{ route('logout') }}" class="nav-item dropdown-item" onclick="event.preventDefault();  document.getElementById('logout-form').submit();">{{ __('Cerrar sesión') }}</a>
                         </li>
                     </ul>
                 </li>

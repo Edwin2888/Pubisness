@@ -25,10 +25,6 @@
                                   <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile"
                                     aria-selected="false">Nuevo</a>
                                 </li>
-                                {{-- <li class="nav-item">
-                                  <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact"
-                                    aria-selected="false">Editar</a>
-                                </li> --}}
                             </ul>
                         </div>
                     </div>
@@ -66,10 +62,10 @@
                                             <th>Nombre</th>
                                             <th class="text-center">Precio Entrada</th>
                                             <th class="text-center">Precio Venta</th>
-                                            {{-- <th>Stock</th> --}}
+                                            <th>Aplica gasto</th>
                                             <th>Fecha creacion</th>
                                             <th>Fecha edición</th>
-                                            <th class="text-right"><i class="tim-icons icon-pencil"></i></th>
+                                            <th class="text-right"><i class="fa fa-cogs"></i></th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -79,7 +75,13 @@
                                             <td>{{ $value->name }}</td>
                                             <td class="text-center">$ {{ number_format($value->entry_price) }}</td>
                                             <td class="text-center">$ {{ number_format($value->sale_price) }}</td>
-                                            {{-- <td>{{ $value->stock }}</td> --}}
+                                            <td>
+                                                @if(!is_null($value->id_type_expense) && !empty($value->id_type_expense))
+                                                    {{ $value->expense->name }}
+                                                @else
+                                                    NO
+                                                @endif
+                                            </td>
                                             <td>{{ $value->created_at }}</td>
 
                                             <td>{{ $value->updated_at }}</td>
@@ -103,25 +105,35 @@
                                         </div>
                                         <form method="post" action="{{ route('products.new') }}" autocomplete="off">
                                             <div class="card-body">
-                                                    @csrf
-                                                    @include('alerts.success')
+                                                @csrf
+                                                @include('alerts.success')
 
-                                                    <div class="form-group{{ $errors->has('name') ? ' has-danger' : '' }}">
-                                                        <label>{{ __('Nombre') }}</label>
-                                                        <input type="text" name="name" class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" placeholder="{{ __('Name') }}" value="{{ old('name', '') }}">
-                                                        @include('alerts.feedback', ['field' => 'name'])
-                                                    </div>
+                                                <div class="form-group{{ $errors->has('name') ? ' has-danger' : '' }}">
+                                                    <label>{{ __('Nombre') }}</label>
+                                                    <input type="text" name="name" class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" placeholder="{{ __('Name') }}" value="{{ old('name', '') }}">
+                                                    @include('alerts.feedback', ['field' => 'name'])
+                                                </div>
 
-                                                    <div class="form-group{{ $errors->has('entry_price') ? ' has-danger' : '' }}">
-                                                        <label>{{ __('Precio Entrada') }}</label>
-                                                        <input type="number" min="0" name="entry_price" class="form-control{{ $errors->has('entry_price') ? ' is-invalid' : '' }}" placeholder="{{ __('Precio Entrada') }}" value="{{ old('entry_price', '') }}">
-                                                        @include('alerts.feedback', ['field' => 'entry_price'])
-                                                    </div>
-                                                    <div class="form-group{{ $errors->has('sale_price') ? ' has-danger' : '' }}">
-                                                        <label>{{ __('Precio Venta') }}</label>
-                                                        <input type="number" min="0" name="sale_price" class="form-control{{ $errors->has('sale_price') ? ' is-invalid' : '' }}" placeholder="{{ __('Precio Venta') }}" value="{{ old('sale_price', '') }}">
-                                                        @include('alerts.feedback', ['field' => 'price'])
-                                                    </div>
+                                                <div class="form-group{{ $errors->has('entry_price') ? ' has-danger' : '' }}">
+                                                    <label>{{ __('Precio Entrada') }}</label>
+                                                    <input type="number" min="0" name="entry_price" class="form-control{{ $errors->has('entry_price') ? ' is-invalid' : '' }}" placeholder="{{ __('Precio Entrada') }}" value="{{ old('entry_price', '') }}">
+                                                    @include('alerts.feedback', ['field' => 'entry_price'])
+                                                </div>
+                                                <div class="form-group{{ $errors->has('sale_price') ? ' has-danger' : '' }}">
+                                                    <label>{{ __('Precio Venta') }}</label>
+                                                    <input type="number" min="0" name="sale_price" class="form-control{{ $errors->has('sale_price') ? ' is-invalid' : '' }}" placeholder="{{ __('Precio Venta') }}" value="{{ old('sale_price', '') }}">
+                                                    @include('alerts.feedback', ['field' => 'sale_price'])
+                                                </div>
+                                                <div class="form-group{{ $errors->has('id_type_expense') ? ' has-danger' : '' }}">
+                                                    <label>{{ __('Aplica gasto') }}</label>
+                                                    <select name="id_type_expense" class="form-control{{ $errors->has('id_type_expense') ? ' is-invalid' : '' }}">
+                                                        <option value="">NO</option>
+                                                        @foreach($oTypes as $item)
+                                                        <option value="{{ $item->id_type_expense }}">{{ $item->name }}</option>
+                                                        @endforeach
+                                                    </select>
+                                                    @include('alerts.feedback', ['field' => 'id_type_expense'])
+                                                </div>
                                             </div>
                                             <div class="card-footer">
                                                 <button type="submit" class="btn btn-fill btn-primary">{{ __('Guardar') }}</button>
@@ -130,9 +142,6 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
-                            eDIT
                         </div>
                     </div>
                 </div>

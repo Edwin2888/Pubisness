@@ -132,4 +132,12 @@ class DocumentController extends Controller
     {
         //
     }
+    public function deuda(Request $request){
+        $oDocument = Document::find($request->id_document);
+        $oDocument->id_status = '5';
+        $oDocument->save();
+        $aMsg = array();
+        $aMsg['success'] = 'Registro actualizado';
+        return response()->json($aMsg);
+    }
 }

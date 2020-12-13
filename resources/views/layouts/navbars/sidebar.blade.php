@@ -54,6 +54,14 @@
                 </a>
             </li>
             @endif
+            @if(@Auth::user()->hasPermissionTo('gastos_permission'))
+            <li @if ($pageSlug == 'expense') class="active " @endif>
+                <a href="{{ route('expense.view') }}" class="mblack">
+                    <i class="tim-icons icon-coins"></i>
+                    <p>{{ __('Gastos') }}</p>
+                </a>
+            </li>
+            @endif
         </ul>
     </div>
 </div>

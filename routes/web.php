@@ -32,6 +32,7 @@ Route::group(['middleware' => 'auth'], function() {
             Route::post('/sales_detail/new','SaleController@detailNew')->name('sales_detail.save');
             Route::post('/sales_detail/pay','SaleController@salePay')->name('sales.pay');
             Route::post('/sales/document','SaleController@saleDocument')->name('sales.document');
+            Route::post('/delete/detail','SaleController@deleteDetail')->name('sales.delete.detail');
             // Run
             Route::get('/run','SaleController@indexRun')->name('sales_run.view');
             Route::post('/run/new','SaleController@createRun')->name('sales.run.new');
@@ -66,6 +67,7 @@ Route::group(['middleware' => 'auth'], function() {
         Route::prefix('/documents')->group(function () {
             Route::get('/','DocumentController@index')->name('documents.view');
             Route::post('/filter','DocumentController@filter')->name('documents.filter');
+            Route::post('/deuda','DocumentController@deuda')->name('deuda.document');
         });
     });
 
@@ -79,6 +81,22 @@ Route::group(['middleware' => 'auth'], function() {
         Route::prefix('/roles')->group(function () {
             Route::get('/','RolController@index')->name('roles.view');
             Route::post('/filter','RolController@assign')->name('roles.assign');
+        });
+    });
+
+    Route::group(['middleware' => ['permission:gastos_permission']], function() {
+        Route::prefix('/expenses')->group(function () {
+            Route::get('/','ExpenseController@index')->name('expense.view');
+            Route::get('/new','ExpenseController@new')->name('expense.new');
+            Route::post('/create','ExpenseController@create')->name('expense.create');
+        });
+    });
+
+    Route::group(['middleware' => ['permission:type_gastos_permission']], function() {
+        Route::prefix('/expenses/type')->group(function () {
+            Route::get('/','ExpenseController@indexType')->name('expense_type.view');
+            Route::post('/new','ExpenseController@createType')->name('expense_type.new');
+            Route::get('/edit/{id}','ExpenseController@editType')->name('expense_type.edit');
         });
     });
 });

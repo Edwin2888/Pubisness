@@ -60,7 +60,7 @@
                                             <div class="col-md-7">
                                                 <div class="form-group{{ $errors->has('description') ? ' has-danger' : '' }}">
                                                     <label>{{ __('Descripción Venta') }}</label>
-                                                    <input type="text" name="description" class="form-control{{ $errors->has('description') ? ' is-invalid' : '' }}" placeholder="{{ __('Descripción') }}" value="{{ old('description', '') }}">
+                                                    <input type="text" name="description" class="form-control{{ $errors->has('description') ? ' is-invalid' : '' }}" placeholder="{{ __('Descripción') }}" value="{{ old('description', $document->description) }}">
                                                     @include('alerts.feedback', ['field' => 'description'])
                                                 </div>
                                             </div>
@@ -97,7 +97,7 @@
                                     </div>
                                 </div>
                                 <div class="card-footer">
-                                    @if($document->id_status == '1')
+                                    @if($document->id_status == '1' || $document->id_status == '5' || $document->id_status == '2')
                                         <button type="submit" class="pull-right btn btn-fill btn-primary">{{ __('Agregar') }}</button>
                                     @endif
                                 </div>
@@ -106,11 +106,11 @@
                         <div class="col-md-4">
                             <label>Saldo Total: </label>
                             <h1 style="font-size: 50px">$ {{ number_format($document->total) }}</h1>
-                            @if($document->id_status == '3')
+                            @if($document->id_status == '3' || $document->id_status == '5' || $document->id_status == '2')
                             <label>Saldo pagado: </label>
                             <h1 style="font-size: 50px">$ {{ number_format($document->payment) }}</h1>
                             @endif
-                            @if($document->id_status == '1')
+                            @if($document->id_status == '1' || $document->id_status == '5' || $document->id_status == '2')
                                 <div class="row">
                                     <div class="col-md-12">
                                         <label>Vuelto: </label><h1 id="vuelto" style="font-size: 30px"></h1>
@@ -135,10 +135,12 @@
                                             <label>Cerrar cuenta:</label><br>
                                             <button class="btn btn-success">PAGAR</button>
                                         </div>
+                                        @if($document->id_status <> '5')
                                         <div class="col-md-6">
                                             <label>Posponer cuenta:</label><br>
-                                            <button type="button" class="btn btn-danger">DEUDA</button>
+                                            <button type="button" onclick="deudaDocument('{{ $document->id_document }}')" class="btn btn-danger">DEUDA</button>
                                         </div>
+                                        @endif
                                     </div>
                                 </form>
                             @endif
@@ -183,6 +185,27 @@
 @push('js')
     {{-- <script src="{{ asset('black') }}/js/plugins/chartjs.min.js"></script> --}}
     <script>
+        function deudaDocument(_idDocument){
+            $.ajax({
+                type: "POST",
+                url: "{{ route('deuda.document') }}",
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    id_document: _idDocument
+                },
+                dataType: "jSon",
+                success: function (response) {
+                    if(response.error){
+                        alert(response.error);
+                    }
+                    if(response.success){
+                        location.reload();
+                    }
+                },error: function(){
+                    alert('Error');
+                }
+            });
+        }
         function changePrice(){
             let _price = $("#precio").val();
             if(!_price){

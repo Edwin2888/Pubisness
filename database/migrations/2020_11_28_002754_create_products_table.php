@@ -19,7 +19,7 @@ class CreateProductsTable extends Migration
             $table->string('code')->unique()->nullable();
             $table->decimal('sale_price', 12, 2)->default(0);
             $table->decimal('entry_price', 12, 2)->default(0);
-            $table->decimal('stock', 12, 2)->nullable();
+            $table->integer('id_type_expense')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

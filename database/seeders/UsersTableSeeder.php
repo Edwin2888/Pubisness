@@ -23,6 +23,8 @@ class UsersTableSeeder extends Seeder
         Permission::create(['name' => 'document_permission']);
         Permission::create(['name' => 'inventory_permission']);
         Permission::create(['name' => 'roles_permission']);
+        Permission::create(['name' => 'gastos_permission']);
+        Permission::create(['name' => 'type_gastos_permission']);
         $role = Role::create(['name' => 'owner']);
         $role->givePermissionTo('sales_permission');
         $role->givePermissionTo('product_permission');
@@ -30,17 +32,22 @@ class UsersTableSeeder extends Seeder
         $role->givePermissionTo('document_permission');
         $role->givePermissionTo('inventory_permission');
         $role->givePermissionTo('roles_permission');
+        $role->givePermissionTo('gastos_permission');
+        $role->givePermissionTo('type_gastos_permission');
         $role = Role::create(['name' => 'employee']);
         $role->givePermissionTo('product_permission');
         $role->givePermissionTo('sales_permission');
         $role->givePermissionTo('income_permission');
         $role->givePermissionTo('document_permission');
+        $role->givePermissionTo('gastos_permission');
         $role = Role::create(['name' => 'admin']);
         $role->givePermissionTo('inventory_permission');
         $role->givePermissionTo('document_permission');
         $role->givePermissionTo('product_permission');
         $role->givePermissionTo('income_permission');
         $role->givePermissionTo('sales_permission');
+        $role->givePermissionTo('gastos_permission');
+        $role->givePermissionTo('type_gastos_permission');
         // $role->hasPermissionTo('sales_permission');
         $user = User::create([
             'id' => 1,

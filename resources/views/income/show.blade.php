@@ -109,6 +109,7 @@
                                         <th>Producto</th>
                                         <th>Precio</th>
                                         <th>Cantidad</th>
+                                        <th><i class="fa fa-cogs"></i></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -118,6 +119,7 @@
                                             <td>{{ $value->name }}</td>
                                             <td>$ {{ number_format($value->price) }}</td>
                                             <td>{{ $value->quantity }}</td>
+                                            <td><a href="javascript:void(0)" onclick="deleteItem('{{ $value->id_auto }}')" class="btn btn-link btn-danger btn-icon btn-sm remove"><i class="tim-icons icon-simple-remove"></i></a></td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -131,6 +133,27 @@
 @endsection
 @section('js')
     <script>
+        function deleteItem(_idAuto){
+            $.ajax({
+                type: "POST",
+                url: "{{ route('sales.run.delete.detail') }}",
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    id_auto: _idAuto
+                },
+                dataType: "jSon",
+                success: function (response) {
+                    if(response.error){
+                        alert(response.error);
+                    }
+                    if(response.success){
+                        location.reload();
+                    }
+                },error: function(){
+                    alert('Error');
+                }
+            });
+        }
         $(document).ready(function() {
             $().ready(function() {
                 $("body").on('change','.complete-product',function(){
