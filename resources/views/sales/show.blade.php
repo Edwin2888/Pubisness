@@ -45,30 +45,40 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12">
+                    <div class="col-md-12 col-lg-12 col-xs-12 col-sm-12">
                         <div class="form-group">
-                            <label>{{ __('Cantidad') }}</label>
-                            <input value="1" type="number" name="quantity" id="cantidad" class="form-control" min="0">
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
-                        <div class="form-group">
-                            <label>{{ __('Precio') }}</label>( <span id="price"></span> )
-                            <input id="precio" type="number" name="price" class="form-control" min="0">
-                        </div>
-                    </div>
-                    <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
-                        <div class="form-group">
-                            <label>{{ __('Total') }}</label>( <span id="totalS"></span> )
-                            <input id="total" disabled type="text" class="form-control" min="0">
-                        </div>
-                    </div>
-                    <div class="col-md-4 col-lg-4 col-xs-12 col-sm-12">
-                        <div class="form-group">
-                            <button class="btn mt-4 pull-right">Agregar</button>
+                            <label>{{ __('Observación') }}</label>
+                            <input type="text" name="observation" class="form-control" placeholder="Observacion">
                         </div>
                     </div>
                 </div>
+                @if($sale->status <> '3')
+                    <div class="row">
+                        <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12">
+                            <div class="form-group">
+                                <label>{{ __('Cantidad') }}</label>
+                                <input value="1" type="number" name="quantity" id="cantidad" class="form-control" min="0">
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
+                            <div class="form-group">
+                                <label>{{ __('Precio') }}</label>( <span id="price"></span> )
+                                <input id="precio" type="number" name="price" class="form-control" min="0">
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-lg-3 col-xs-12 col-sm-12">
+                            <div class="form-group">
+                                <label>{{ __('Total') }}</label>( <span id="totalS"></span> )
+                                <input id="total" disabled type="text" class="form-control" min="0">
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-lg-4 col-xs-12 col-sm-12">
+                            <div class="form-group">
+                                <button class="btn mt-4 pull-right">Agregar</button>
+                            </div>
+                        </div>
+                    </div>
+                @endif
             </form>
         </div>
         <div class="col-md-4">
@@ -130,34 +140,40 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-12">
-                            <table class="table table-hover">
-                                <thead>
-                                    <tr>
-                                        <th>Codigo</th>
-                                        <th>Producto</th>
-                                        <th>Usuario</th>
-                                        <th>Hora</th>
-                                        <th>Precio</th>
-                                        <th>Cantidad</th>
-                                        <th>Total</th>
-                                        <th><i class="fa fa-cogs"></i></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach($saleDetail as $key => $value)
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
                                         <tr>
-                                            <td>{{ $value->code }}</td>
-                                            <td>{{ $value->product }}</td>
-                                            <td>{{ auth()->user()->name }}</td>
-                                            <td>{{ $value->updated_at }}</td>
-                                            <td>$ {{ number_format($value->price) }}</td>
-                                            <td>{{ $value->quantity }}</td>
-                                            <td>$ {{ number_format($value->price * $value->quantity) }}</td>
-                                            <td><a href="javascript:void(0)" onclick="deleteItem('{{ $value->id_auto }}')" class="btn btn-link btn-danger btn-icon btn-sm remove"><i class="tim-icons icon-simple-remove"></i></a></td>
+                                            <th>Codigo</th>
+                                            <th>Producto</th>
+                                            <th>Observacion</th>
+                                            <th>Hora</th>
+                                            <th>Precio</th>
+                                            <th>Cantidad</th>
+                                            <th>Total</th>
+                                            @if($sale->status <> '3')
+                                            <th><i class="fa fa-cogs"></i></th>
+                                            @endif
                                         </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        @foreach($saleDetail as $key => $value)
+                                            <tr>
+                                                <td>{{ $value->code }}</td>
+                                                <td>{{ $value->product }}</td>
+                                                <td>{{ $value->observation }}</td>
+                                                <td>{{ $value->updated_at }}</td>
+                                                <td>$ {{ number_format($value->price) }}</td>
+                                                <td>{{ $value->quantity }}</td>
+                                                <td>$ {{ number_format($value->price * $value->quantity) }}</td>
+                                                @if($sale->status <> '3')
+                                                <td><a href="javascript:void(0)" onclick="deleteItem('{{ $value->id_auto }}')" class="btn btn-link btn-danger btn-icon btn-sm remove"><i class="tim-icons icon-simple-remove"></i></a></td>
+                                                @endif
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>

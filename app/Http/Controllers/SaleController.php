@@ -137,6 +137,7 @@ class SaleController extends Controller
             $oSaleDetail->id_product = $request->id_product;
             $oSaleDetail->id_user = auth()->user()->id;
             $oSaleDetail->price = $request->price;
+            $oSaleDetail->observation = $request->observation;
             $oSaleDetail->quantity = $request->quantity;
             $oSaleDetail->state = 1;
             $oSaleDetail->save();

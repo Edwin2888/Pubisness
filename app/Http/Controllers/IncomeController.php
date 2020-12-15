@@ -28,7 +28,7 @@ class IncomeController extends Controller
     public function create(Request $request)
     {
         $validatedData = $request->validate([
-            'code' => 'required|max:255',
+            // 'code' => 'required|max:255',
             'description' => 'required|max:255',
             'id_product' => 'required',
             'price' => 'required|numeric|min:1|not_in:0',

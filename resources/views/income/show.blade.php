@@ -49,7 +49,7 @@
                                     <div class="card-body">
                                         <div class="form-group{{ $errors->has('code') ? ' has-danger' : '' }}">
                                             <label>{{ __('Codigo Factura') }}</label>
-                                            <input type="text" disabled class="form-control{{ $errors->has('code') ? ' is-invalid' : '' }}" placeholder="{{ __('Codigo') }}" value="{{ $document->code }}">
+                                            <input type="text" name="code" class="form-control{{ $errors->has('code') ? ' is-invalid' : '' }}" placeholder="{{ __('Codigo') }}" value="{{ old('code',$document->code) }}">
                                             @include('alerts.feedback', ['field' => 'code'])
                                         </div>
                                         <div class="form-group{{ $errors->has('date_document') ? ' has-danger' : '' }}">
