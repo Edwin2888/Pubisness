@@ -88,7 +88,7 @@
             </div>
         @endauth
         @if(@Auth::user())
-            @if(@Auth::user()->hasPermissionTo('roles_permission'))
+            @if(@Auth::user()->hasPermissionTo('sales_permission'))
                 <div class="fixed-plugin">
                     <div class="dropdown show-dropdown">
                         <a href="#" data-toggle="dropdown">
