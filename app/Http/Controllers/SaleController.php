@@ -409,10 +409,10 @@ class SaleController extends Controller
     }
     public function indexProduced(Request $request){
         $date = date('Y-m-d');
-        $nPayment = Document::where('date_document',$date)->sum('payment');
+        $nPayment = Document::where('date_document',$date)->where('id_type','2')->sum('payment');
         // $nTotal = DocumentDetail::where(DB::raw('cast(created_at as date)'))
-        $nTotal = Document::where('date_document',$date)->sum('total');
-        $nDeuda = Document::where('date_document',$date)->where(function($q){
+        $nTotal = Document::where('date_document',$date)->where('id_type','2')->sum('total');
+        $nDeuda = Document::where('date_document',$date)->where('id_type','2')->where(function($q){
             $q->whereNull('payment')->orWhere('payment','<=','0');
         })->sum('total');
 
