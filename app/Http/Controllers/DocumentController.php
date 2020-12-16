@@ -32,6 +32,19 @@ class DocumentController extends Controller
     }
     public function filter(Request $request){
         $types = TypeDocument::get();
+        if(!is_null($request->pendientes)){
+            $oDocument = Document::join('type_documents as t','t.id_type','documents.id_type')
+            ->join('status_sales as s','s.id_status','documents.id_status')
+            ->select('documents.*','s.name as estado','t.name as tipo')
+            ->where('s.id_status','<>','3')
+            ->get();
+
+            $sDateIni = date('Y-m-d');
+            $sDateFin = date('Y-m-d');
+            $sType = $request->id_type;
+            $sDetalle = $request->detalle;
+            return view('documents.index',compact('oDocument','types','sDateIni','sDateFin','sType','sDetalle'));
+        }
         $oDocument = Document::when(!is_null($request->fecha_ini) && !is_null($request->fecha_fin),function($q)use($request){
             $q->whereBetween('date_document',[$request->fecha_ini,$request->fecha_fin]);
         })->when(!is_null($request->id_type),function($q)use($request){

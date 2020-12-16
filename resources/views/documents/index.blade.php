@@ -46,6 +46,15 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-12">
+                            <form action="{{ route('documents.filter') }}" method="post">
+                                @csrf
+                                <input type="hidden" name="pendientes" value="SI">
+                                <button class="pull-right btn">Traer cuentas pendientes</button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
                             <div class="table-responsive">
                                 <table class="table tablesorter" id="bootstrap-data-table-export">
                                     <thead>
