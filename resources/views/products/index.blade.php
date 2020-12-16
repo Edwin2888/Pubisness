@@ -1,5 +1,7 @@
 @extends('layouts.app', ['pageSlug' => 'products'])
-
+@section('css')
+<link href="{{ asset('black') }}/adminlte.min.css" rel="stylesheet" />
+@endsection
 @section('content')
 
     <div class="row">

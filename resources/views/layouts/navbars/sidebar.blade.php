@@ -62,6 +62,14 @@
                 </a>
             </li>
             @endif
+            @if(@Auth::user()->hasPermissionTo('sales_permission'))
+            <li @if ($pageSlug == 'produced') class="active " @endif>
+                <a href="{{ route('produced.view') }}" class="mblack">
+                    <i class="tim-icons icon-wallet-43"></i>
+                    <p>{{ __('Producido') }}</p>
+                </a>
+            </li>
+            @endif
         </ul>
     </div>
 </div>

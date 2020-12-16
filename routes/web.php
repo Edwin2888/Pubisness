@@ -41,6 +41,10 @@ Route::group(['middleware' => 'auth'], function() {
             Route::post('/run/pay','SaleController@payRun')->name('sales.run.pay');
             Route::post('/run/delete/detail','SaleController@deleteDetailRun')->name('sales.run.delete.detail');
         });
+
+        Route::prefix('/produced')->group(function () {
+            Route::get('/','SaleController@indexProduced')->name('produced.view');
+        });
     });
     Route::group(['middleware' => ['permission:product_permission']], function() {
         // Products

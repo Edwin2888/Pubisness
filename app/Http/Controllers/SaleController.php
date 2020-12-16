@@ -407,4 +407,15 @@ class SaleController extends Controller
         $aMsg['success'] = 'Deuda adocionada';
         return response()->json($aMsg);
     }
+    public function indexProduced(Request $request){
+        $date = date('Y-m-d');
+        $nPayment = Document::where('date_document',$date)->sum('payment');
+        // $nTotal = DocumentDetail::where(DB::raw('cast(created_at as date)'))
+        $nTotal = Document::where('date_document',$date)->sum('total');
+        $nDeuda = Document::where('date_document',$date)->where(function($q){
+            $q->whereNull('payment')->orWhere('payment','<=','0');
+        })->sum('total');
+
+        return view('produced.index',compact('nPayment','nTotal','nDeuda','date'));
+    }
 }
