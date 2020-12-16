@@ -293,7 +293,8 @@ class SaleController extends Controller
             return redirect()->route('sales_run.view')->withErrors('Registro no encontrado');
         }
         $documentDetail = DocumentDetail::where('id_document',$id)
-        ->join('products as p','p.id_product','document_details.id_product')->get();
+        ->join('products as p','p.id_product','document_details.id_product')
+        ->select('document_details.*','p.name','p.code')->get();
         return view('sales.run.show',compact('document','documentDetail'));
     }
     public function payRun(Request $request){
@@ -308,12 +309,12 @@ class SaleController extends Controller
             if(is_null($document)){
                 return redirect()->route('sales_run.view')->withErrors('Registro no encontrado');
             }
-            if($document->total <= $request->recibe){
+            if($document->total <= $request->recibe + $document->payment){
                 $document->payment = $document->total;
                 $document->id_status = '3';
                 $document->save();
             }else{
-                $document->payment = $request->recibe;
+                $document->payment = $request->recibe + $document->payment;
                 $document->id_status = '2';
                 $document->save();
             }
@@ -358,6 +359,52 @@ class SaleController extends Controller
         $oSale->total = $nTotal;
         $oSale->save();
         $aMsg['success'] = 'Registro eliminado';
+        return response()->json($aMsg);
+    }
+    public function deuda(Request $request){
+        $sale = SalesTable::find($request->id_sale);
+
+        $saleTotal = SalesTableDetail::where('id_sale',$request->id_sale)->sum(DB::raw('price * quantity'));
+        $nPay = SaleTablePay::where('id_sale',$request->id_sale)->sum('payment');
+
+
+        if($saleTotal <= $nPay){
+            $sale->status = '3';
+            $sale->save();
+        }else{
+            $sale->status = '5';
+            $sale->save();
+        }
+        $saleDocument = Document::where('id_sale',$sale->id_sale)->first();
+        if(!is_null($saleDocument)){
+            $aMsg['error'] = 'Ya se cerro la venta';
+            return response()->json($aMsg);
+        }
+        $document = new Document();
+        $document->description = $sale->name;
+        $document->total = (is_null($saleTotal) ? 0 : $saleTotal);
+        $document->payment = (is_null($nPay) ? 0 : $nPay);
+        $document->id_status = '1';
+        $document->id_sale = $sale->id_sale;
+        $document->id_user = $sale->id_user;
+        $document->date_document = $sale->sale_date;
+        $document->id_type = '2';
+        $document->save();
+
+        $detail = SalesTableDetail::where('id_sale',$request->id_sale)->get();
+        $detail->each(function($item, $key)use($document){
+            $documentDetail = new DocumentDetail();
+            $documentDetail->id_product = $item->id_product;
+            $documentDetail->price = $item->price;
+            $documentDetail->quantity = $item->quantity;
+            $documentDetail->id_user = $item->id_user;
+            $documentDetail->id_document = $document->id_document;
+            $documentDetail->save();
+        });
+
+        // $oDocument
+        $aMsg = array();
+        $aMsg['success'] = 'Deuda adocionada';
         return response()->json($aMsg);
     }
 }

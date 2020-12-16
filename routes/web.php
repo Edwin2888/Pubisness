@@ -33,6 +33,7 @@ Route::group(['middleware' => 'auth'], function() {
             Route::post('/sales_detail/pay','SaleController@salePay')->name('sales.pay');
             Route::post('/sales/document','SaleController@saleDocument')->name('sales.document');
             Route::post('/delete/detail','SaleController@deleteDetail')->name('sales.delete.detail');
+            Route::post('/deuda','SaleController@deuda')->name('deuda.sale');
             // Run
             Route::get('/run','SaleController@indexRun')->name('sales_run.view');
             Route::post('/run/new','SaleController@createRun')->name('sales.run.new');

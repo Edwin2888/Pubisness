@@ -60,7 +60,7 @@
                                             <div class="col-md-7">
                                                 <div class="form-group{{ $errors->has('description') ? ' has-danger' : '' }}">
                                                     <label>{{ __('Descripción Venta') }}</label>
-                                                    <input type="text" name="description" class="form-control{{ $errors->has('description') ? ' is-invalid' : '' }}" placeholder="{{ __('Descripción') }}" value="{{ old('description', $document->description) }}">
+                                                    <input type="text" name="description" class="form-control{{ $errors->has('description') ? ' is-invalid' : '' }}" placeholder="{{ __('Descripción') }}" value="{{ old('description', $document->description) }}" autocomplete="off">
                                                     @include('alerts.feedback', ['field' => 'description'])
                                                 </div>
                                             </div>
@@ -109,6 +109,7 @@
                             @if($document->id_status == '3' || $document->id_status == '5' || $document->id_status == '2')
                             <label>Saldo pagado: </label>
                             <h1 style="font-size: 50px">$ {{ number_format($document->payment) }}</h1>
+                            <input type="hidden" id="payment" value="{{ $document->payment }}">
                             @endif
                             @if($document->id_status == '1' || $document->id_status == '5' || $document->id_status == '2')
                                 <div class="row">
@@ -123,7 +124,7 @@
                                         <input type="hidden" id="total_sale" name="payment" value="{{ $document->total }}">
                                         <div class="col-md-4">
                                             <label>Recibe: </label>
-                                            <input type="text" id="total_recibe" name="recibe" class="form-control">
+                                            <input type="text" id="total_recibe" name="recibe" class="form-control" autocomplete="off">
                                         </div>
                                         <div class="col-md-8">
                                             <label>$: </label>
@@ -135,12 +136,12 @@
                                             <label>Cerrar cuenta:</label><br>
                                             <button class="btn btn-success">PAGAR</button>
                                         </div>
-                                        @if($document->id_status <> '5')
+                                        {{-- @if($document->id_status <> '5')
                                         <div class="col-md-6">
                                             <label>Posponer cuenta:</label><br>
                                             <button type="button" onclick="deudaDocument('{{ $document->id_document }}')" class="btn btn-danger">DEUDA</button>
                                         </div>
-                                        @endif
+                                        @endif --}}
                                     </div>
                                 </form>
                             @endif
@@ -154,6 +155,7 @@
                                         <tr>
                                             <th>Codigo</th>
                                             <th>Producto</th>
+                                            <th>Hora</th>
                                             <th>Precio</th>
                                             <th>Cantidad</th>
                                             <th>Total</th>
@@ -165,6 +167,7 @@
                                             <tr>
                                                 <td>{{ $value->code }}</td>
                                                 <td>{{ $value->name }}</td>
+                                                <td>{{ $value->created_at }}</td>
                                                 <td>$ {{ number_format($value->price) }}</td>
                                                 <td>{{ $value->quantity }}</td>
                                                 <td>$ {{ number_format($value->price * $value->quantity) }}</td>
@@ -227,7 +230,11 @@
                 return;
             }
             let total = $("#total_sale").val();
-            let vuelto = abono - total;
+            let pago = $("#payment").val();
+            if(!pago){
+                pago = 0;
+            }
+            let vuelto = parseInt(pago) + parseInt(abono) - parseInt(total);
             if(vuelto < 0){
                 vuelto = 0;
             }

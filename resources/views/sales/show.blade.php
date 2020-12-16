@@ -52,7 +52,7 @@
                         </div>
                     </div>
                 </div>
-                @if($sale->status <> '3')
+                @if($sale->status <> '3' && $sale->status <> '5')
                     <div class="row">
                         <div class="col-md-2 col-lg-2 col-xs-12 col-sm-12">
                             <div class="form-group">
@@ -97,7 +97,7 @@
         </div>
     </div>
     <hr>
-    @if($saleTotal > 0 && $sale->status <> '3')
+    @if($saleTotal > 0 && $sale->status <> '3' && $sale->status <> '5')
         <form action="{{ route('sales.pay') }}" method="post">
             <div class="row">
                 @csrf
@@ -108,11 +108,15 @@
                     <label>Valor</label>
                     <input id="abono" name="recibido" type="number" class="form-control" min="0">
                 </div>
-                <div class="col-md-3 col-sm-12 col-xs-12">
+                <div class="col-md-2 col-sm-12 col-xs-12">
                     <label>Recibido</label><h1 id="abonoS">$ 0</h1>
                 </div>
-                <div class="col-md-3 col-sm-12 col-xs-6">
+                <div class="col-md-2 col-sm-12 col-xs-6">
                     <label>Vuelto</label><h1 id="vueltoS">$ 0</h1>
+                </div>
+                <div class="col-md-2 col-sm-12 col-xs-6">
+                    <label>Posponer cuenta:</label><br>
+                    <button type="button" onclick="deudaDocument('{{ $sale->id_sale }}')" class="btn btn-danger">DEUDA</button>
                 </div>
                 <div class="col-md-4 col-sm-12 col-xs-6">
                     <div class="row">
@@ -151,7 +155,7 @@
                                             <th>Precio</th>
                                             <th>Cantidad</th>
                                             <th>Total</th>
-                                            @if($sale->status <> '3')
+                                            @if($sale->status <> '3' && $sale->status <> '5')
                                             <th><i class="fa fa-cogs"></i></th>
                                             @endif
                                         </tr>
@@ -166,7 +170,7 @@
                                                 <td>$ {{ number_format($value->price) }}</td>
                                                 <td>{{ $value->quantity }}</td>
                                                 <td>$ {{ number_format($value->price * $value->quantity) }}</td>
-                                                @if($sale->status <> '3')
+                                                @if($sale->status <> '3' && $sale->status <> '5')
                                                 <td><a href="javascript:void(0)" onclick="deleteItem('{{ $value->id_auto }}')" class="btn btn-link btn-danger btn-icon btn-sm remove"><i class="tim-icons icon-simple-remove"></i></a></td>
                                                 @endif
                                             </tr>
@@ -185,6 +189,27 @@
 @section('js')
     {{-- <script src="{{ asset('black') }}/js/plugins/chartjs.min.js"></script> --}}
     <script>
+        function deudaDocument(_idDocument){
+            $.ajax({
+                type: "POST",
+                url: "{{ route('deuda.sale') }}",
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    id_sale: _idDocument
+                },
+                dataType: "jSon",
+                success: function (response) {
+                    if(response.error){
+                        alert(response.error);
+                    }
+                    if(response.success){
+                        location.reload();
+                    }
+                },error: function(){
+                    alert('Error');
+                }
+            });
+        }
         function saveDocument(_idSale){
             $.ajax({
                 type: "POST",
