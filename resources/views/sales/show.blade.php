@@ -190,6 +190,7 @@
     {{-- <script src="{{ asset('black') }}/js/plugins/chartjs.min.js"></script> --}}
     <script>
         function deudaDocument(_idDocument){
+            $("#loading-open").addClass('loading-head');
             $.ajax({
                 type: "POST",
                 url: "{{ route('deuda.sale') }}",
@@ -199,6 +200,7 @@
                 },
                 dataType: "jSon",
                 success: function (response) {
+                    $("#loading-open").removeClass('loading-head');
                     if(response.error){
                         alert(response.error);
                     }
@@ -206,11 +208,13 @@
                         location.reload();
                     }
                 },error: function(){
+                    $("#loading-open").removeClass('loading-head');
                     alert('Error');
                 }
             });
         }
         function saveDocument(_idSale){
+            $("#loading-open").addClass('loading-head');
             $.ajax({
                 type: "POST",
                 url: "{{ route('sales.document') }}",
@@ -220,6 +224,7 @@
                 },
                 dataType: "jSon",
                 success: function (response) {
+                    $("#loading-open").removeClass('loading-head');
                     if(response.error){
                         alert(response.error);
                     }
@@ -227,11 +232,13 @@
                         location.reload();
                     }
                 },error: function(){
+                    $("#loading-open").removeClass('loading-head');
                     alert('Error');
                 }
             });
         }
         function deleteItem(_idAuto){
+            $("#loading-open").addClass('loading-head');
             $.ajax({
                 type: "POST",
                 url: "{{ route('sales.delete.detail') }}",
@@ -241,6 +248,7 @@
                 },
                 dataType: "jSon",
                 success: function (response) {
+                    $("#loading-open").removeClass('loading-head');
                     if(response.error){
                         alert(response.error);
                     }
@@ -248,6 +256,7 @@
                         location.reload();
                     }
                 },error: function(){
+                    $("#loading-open").removeClass('loading-head');
                     alert('Error');
                 }
             });

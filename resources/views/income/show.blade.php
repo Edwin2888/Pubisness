@@ -134,6 +134,7 @@
 @section('js')
     <script>
         function deleteItem(_idAuto){
+            $("#loading-open").addClass('loading-head');
             $.ajax({
                 type: "POST",
                 url: "{{ route('sales.run.delete.detail') }}",
@@ -143,6 +144,7 @@
                 },
                 dataType: "jSon",
                 success: function (response) {
+                    $("#loading-open").removeClass('loading-head');
                     if(response.error){
                         alert(response.error);
                     }
@@ -150,6 +152,7 @@
                         location.reload();
                     }
                 },error: function(){
+                    $("#loading-open").removeClass('loading-head');
                     alert('Error');
                 }
             });

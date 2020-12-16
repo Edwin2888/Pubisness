@@ -26,6 +26,81 @@
                 background-color: transparent !important;
             }
             .tooltip { top: 0; }
+            .loading-head {
+                margin: 0;
+                width: 100%;
+                height: 100%;
+                position: fixed;
+                z-index: 9999;
+                background-color: #e14eca;
+                opacity: 0.8;
+                overflow-Y: hidden; /*quitar el scroll*/
+            }
+            .loading-head > .loader{
+                visibility: visible;
+                display: block;
+            }
+
+            .loader,
+            .loader:before,
+            .loader:after {
+            background: #ffffff;
+            -webkit-animation: load1 1s infinite ease-in-out;
+            animation: load1 1s infinite ease-in-out;
+            width: 1em;
+            height: 4em;
+            }
+            .loader {
+                display: none;
+                color: #ffffff;
+                text-indent: -9999em;
+                margin: 300px auto;
+                font-size: 50px;
+                -webkit-transform: translateZ(0);
+                -ms-transform: translateZ(0);
+                transform: translateZ(0);
+                -webkit-animation-delay: -0.16s;
+                animation-delay: -0.16s;
+                visibility: hidden;
+            }
+            .loader:before,
+            .loader:after {
+                position: fixed;
+                top: 0;
+                content: '';
+            }
+            .loader:before {
+                left: -1.5em;
+                -webkit-animation-delay: -0.32s;
+                animation-delay: -0.32s;
+            }
+            .loader:after {
+                left: 1.5em;
+            }
+            @-webkit-keyframes load1 {
+                0%,
+                80%,
+                100% {
+                    box-shadow: 0 0;
+                    height: 4em;
+                }
+                40% {
+                    box-shadow: 0 -2em;
+                    height: 5em;
+                }
+            }
+            @keyframes load1 {
+                0%,
+                80%,
+                100% {
+                    box-shadow: 0 0;
+                    height: 4em;
+                }
+                40% {
+                    box-shadow: 0 -2em;
+                    height: 5em;
+                }
+            }
             /* .page-link{
                 border-radius: 30px !important;
             } */
@@ -52,6 +127,9 @@
         {{-- <link href="{{ asset('black') }}/adminlte.min.css" rel="stylesheet" /> --}}
     </head>
     <body class="{{ $class ?? 'sidebar-mini' }}">
+        <div id="loading-open">
+            <div class="loader">Loading...</div>
+        </div>
         @auth()
             <div class="wrapper">
                 <div class="navbar-minimize-fixed" style="opacity: 1;">
@@ -149,6 +227,10 @@
         @yield('js')
 
         <script>
+            $("#loading-open").addClass('loading-head');
+            $(window).on('load', function () {
+                $("#loading-open").removeClass('loading-head');
+            });
             function numberFomat(number, format = true){
                 let numero = parseInt(number);
 
