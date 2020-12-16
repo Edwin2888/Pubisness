@@ -63,7 +63,7 @@ class SaleController extends Controller
             $q->where('sales_tables.sale_date',$request->dia);
         })
         ->orderBy('status','asc')->orderBy('id_sale','desc')
-        ->get(['sales_tables.*',DB::raw('(total.total - pay.pay) as total')]);
+        ->get(['sales_tables.*',DB::raw('(total.total - pay.pay) as tota'),'total.total','pay.pay']);
         return view('sales.index',compact('sales','sAll','sDate','sDateAnt','sDateDes'));
     }
 

@@ -89,6 +89,8 @@
                                     <span class="info-box-icon bg-green"><i class="tim-icons icon-wallet-43"></i></span>
                                     @elseif($value->status == 4)
                                     <span class="info-box-icon bg-black"><i class="tim-icons icon-simple-remove"></i></span>
+                                    @elseif($value->status == 5)
+                                    <span class="info-box-icon bg-red"><i class="tim-icons icon-wallet-43"></i></span>
                                     @endif
                                     <div class="info-box-content">
                                         <span class="info-box-text">{{ $value->name }}</span>
@@ -101,6 +103,8 @@
                                         <span class="badge badge-success pull-right">{{ $value->statusn->name }}</span>
                                         @elseif($value->status == 4)
                                         <span class="badge badge-dark pull-right">{{ $value->statusn->name }}</span>
+                                        @elseif($value->status == 5)
+                                        <span class="badge badge-red pull-right">{{ $value->statusn->name }}</span>
                                         @endif
                                         <span class="pull-left"><small>{{ substr($value->updated_at,11,19) }}</small></span>
                                         {{-- @if($value->status != 3)

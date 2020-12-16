@@ -112,7 +112,7 @@
                                             <label>{{ __('Fecha de venta') }}</label>
                                             <input type="date" name="sale_date" class="form-control{{ $errors->has('sale_date') ? ' is-invalid' : '' }}" value="{{ old('sale_date', date('Y-m-d')) }}"><br>
                                             <label>{{ __('Nombre Mesa') }}</label>
-                                            <input type="text" name="name" class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" placeholder="{{ __('Name') }}" value="{{ old('name', '') }}">
+                                            <input type="text" name="name" class="form-control{{ $errors->has('name') ? ' is-invalid' : '' }}" placeholder="{{ __('Name') }}" value="{{ old('name', '') }}" autocomplete="off">
                                             @include('alerts.feedback', ['field' => 'name'])
                                         </div>
                                     </li>
