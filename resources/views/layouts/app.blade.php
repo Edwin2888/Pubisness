@@ -77,7 +77,7 @@
             .loader:after {
                 left: 1.5em;
             }
-            tr:hover {background-color: #e14eca;}
+            tr:hover {background-color: #1e1e2f;}
             @-webkit-keyframes load1 {
                 0%,
                 80%,
