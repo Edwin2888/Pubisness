@@ -384,7 +384,7 @@ class SaleController extends Controller
         $document->description = $sale->name;
         $document->total = (is_null($saleTotal) ? 0 : $saleTotal);
         $document->payment = (is_null($nPay) ? 0 : $nPay);
-        $document->id_status = '1';
+        $document->id_status = (is_null($nPay) || $nPay < 1 ? '1' : '2');
         $document->id_sale = $sale->id_sale;
         $document->id_user = $sale->id_user;
         $document->date_document = $sale->sale_date;
