@@ -251,10 +251,10 @@ class SaleController extends Controller
             $oDocument = Document::find($request->id_document);
             if(is_null($oDocument)){
                 $oDocument = new Document();
+                $oDocument->id_status = '1';
             }
             // $oDocument->code = strtoupper($request->code);
             $oDocument->id_type = '2';
-            $oDocument->id_status = '1';
             $oDocument->id_user = auth()->user()->id;
             $oDocument->date_document = $request->date_document;
             $oDocument->description = strtoupper($request->description);
