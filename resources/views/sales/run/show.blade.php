@@ -69,10 +69,10 @@
                                                 <h1 id="price"></h1>
                                             </div>
                                         </div>
-                                        @if($document->id_status == '1')
+                                        @if($document->id_status <> '3' && $document->id_status <> '4')
                                         <div class="row">
                                             <div class="col-md-6">
-                                                <div class="form-group{{ $errors->has('id_product') ? ' has-danger' : '' }}">
+                                                <div class="form-group{{ $errors->has('id_  ct') ? ' has-danger' : '' }}">
                                                     <label>{{ __('Producto') }}</label>
                                                     <input type="text" name="id_product" style="width: 100%" class="{{ $errors->has('description') ? ' is-invalid' : '' }} complete-product select-search-product">
                                                     @include('alerts.feedback', ['field' => 'id_product'])
