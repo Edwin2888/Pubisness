@@ -252,14 +252,14 @@ class SaleController extends Controller
             if(is_null($oDocument)){
                 $oDocument = new Document();
                 $oDocument->id_status = '1';
+                $oDocument->total = (is_null($request->total) ? 0 : $request->total);
+                $oDocument->payment = (is_null($request->payment) ? 0 : $request->payment);
             }
             // $oDocument->code = strtoupper($request->code);
             $oDocument->id_type = '2';
             $oDocument->id_user = auth()->user()->id;
             $oDocument->date_document = $request->date_document;
             $oDocument->description = strtoupper($request->description);
-            $oDocument->total = (is_null($request->total) ? 0 : $request->total);
-            $oDocument->payment = (is_null($request->payment) ? 0 : $request->payment);
             $oDocument->save();
 
             if(!is_null($request->id_product)){
@@ -283,7 +283,7 @@ class SaleController extends Controller
 
             return redirect()->route('sales.run.show',['id' => $oDocument->id_document])->with('success','Transaccion exitosa');
         } catch (\Throwable $th) {
-            dd($th);
+            // dd($th);
             return back()->withErrors('No se pudo guardar el registro');
         }
     }
