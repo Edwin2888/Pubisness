@@ -418,4 +418,9 @@ class SaleController extends Controller
 
         return view('produced.index',compact('nPayment','nTotal','nDeuda','date'));
     }
+    public function deleteRun($id){
+        $oDocument = Document::find($id);
+        $oDocument->delete();
+        return redirect()->route('sales_run.view');
+    }
 }

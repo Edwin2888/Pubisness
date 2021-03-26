@@ -18,6 +18,9 @@
                         </div>
                         <div class="col-sm-6">
                             <button class="btn pull-right" onclick="location.href='{{ route('sales_run.view') }}'">Nueva</button>
+                            @if($documentDetail->count() == 0)
+                                <button class="btn btn-danger pull-right" onclick="location.href='{{ route('sales_run.delete.sale',$document->id_document) }}'">Eliminar</button>
+                            @endif
                         </div>
                     </div>
                 </div>

@@ -40,6 +40,8 @@ Route::group(['middleware' => 'auth'], function() {
             Route::get('/run/show/{id}','SaleController@showRun')->name('sales.run.show');
             Route::post('/run/pay','SaleController@payRun')->name('sales.run.pay');
             Route::post('/run/delete/detail','SaleController@deleteDetailRun')->name('sales.run.delete.detail');
+
+            Route::get('/run/delete/Sale/{id}','SaleController@deleteRun')->name('sales_run.delete.sale');
         });
 
         Route::prefix('/produced')->group(function () {
