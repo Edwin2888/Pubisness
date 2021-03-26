@@ -338,7 +338,7 @@ class SaleController extends Controller
         }
         $nTotal = DocumentDetail::where('id_document',$oDocument->id_document)->sum(DB::raw('price * quantity'));
         $oDocument->total = $nTotal;
-        $oDocument->payment = $nTotal;
+        // $oDocument->payment = $nTotal;
         $oDocument->save();
         $aMsg['success'] = 'Registro eliminado';
         return response()->json($aMsg);
