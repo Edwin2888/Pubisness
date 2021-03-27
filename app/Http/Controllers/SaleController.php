@@ -297,7 +297,8 @@ class SaleController extends Controller
         }
         $documentDetail = DocumentDetail::where('id_document',$id)
         ->join('products as p','p.id_product','document_details.id_product')
-        ->select('document_details.*','p.name','p.code')->get();
+        ->join('users as s','s.id','document_details.id_user')
+        ->select('document_details.*','p.name','p.code','s.name as user')->get();
         return view('sales.run.show',compact('document','documentDetail'));
     }
     public function payRun(Request $request){

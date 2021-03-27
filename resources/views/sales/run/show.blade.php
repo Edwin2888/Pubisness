@@ -162,6 +162,7 @@
                                             <th>Precio</th>
                                             <th>Cantidad</th>
                                             <th>Total</th>
+                                            <th>Usuario</th>
                                             <th><i class="fa fa-cogs"></i></th>
                                         </tr>
                                     </thead>
@@ -174,6 +175,7 @@
                                                 <td>$ {{ number_format($value->price) }}</td>
                                                 <td>{{ $value->quantity }}</td>
                                                 <td>$ {{ number_format($value->price * $value->quantity) }}</td>
+                                                <td>{{ $value->user }}</td>
                                                 <td><a href="javascript:void(0)" onclick="deleteItem('{{ $value->id_auto }}')" class="btn btn-link btn-danger btn-icon btn-sm remove"><i class="tim-icons icon-simple-remove"></i></a></td>
                                             </tr>
                                         @endforeach
