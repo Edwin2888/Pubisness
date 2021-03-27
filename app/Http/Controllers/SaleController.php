@@ -416,7 +416,7 @@ class SaleController extends Controller
         // $nTotal = DocumentDetail::where(DB::raw('cast(created_at as date)'))
         $nTotal = Document::where('date_document',$date)->where('id_type','2')->sum('total');
         $nDeuda = Document::where('date_document',$date)->where('id_type','2')
-        ->whereIn('id_status',[2,4,5])
+        ->whereIn('id_status',[2,4,5,1])
         ->where(function($q){
             // $q->whereNull('payment')
             $q->where('total','>','payment');
@@ -448,7 +448,7 @@ class SaleController extends Controller
         $nIncome = Document::where($formatDoc,$date)->where('id_type','1')->sum('total');
         $nExpense = Expense::where($formatExpense,$date)->sum(DB::raw('quantity * price'));
         $nDeuda = Document::where($formatDoc,$date)->where('id_type','2')
-        ->whereIn('id_status',[2,4,5])
+        ->whereIn('id_status',[2,4,5,1])
         ->where(function($q){
             // $q->whereNull('payment')
             $q->where('total','>','payment');
