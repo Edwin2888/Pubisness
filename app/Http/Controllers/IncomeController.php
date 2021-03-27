@@ -92,7 +92,10 @@ class IncomeController extends Controller
             return redirect()->route('income.view')->withErrors('Registro no encontrado');
         }
         $documentDetail = DocumentDetail::where('id_document',$id)
-        ->join('products as p','p.id_product','document_details.id_product')->get();
+        ->join('products as p','p.id_product','document_details.id_product')
+        ->join('users as s','s.id','document_details.id_user')
+        ->get(['document_details.*','p.*','s.name as user']);
+
         return view('income.show',compact('document','documentDetail'));
     }
 

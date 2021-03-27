@@ -151,6 +151,7 @@
                                             <th>Codigo</th>
                                             <th>Producto</th>
                                             <th>Observacion</th>
+                                            <th>Usuario</th>
                                             <th>Hora</th>
                                             <th>Precio</th>
                                             <th>Cantidad</th>
@@ -166,6 +167,7 @@
                                                 <td>{{ $value->code }}</td>
                                                 <td>{{ $value->product }}</td>
                                                 <td>{{ $value->observation }}</td>
+                                                <td>{{ $value->user }}</td>
                                                 <td>{{ $value->updated_at }}</td>
                                                 <td>$ {{ number_format($value->price) }}</td>
                                                 <td>{{ $value->quantity }}</td>

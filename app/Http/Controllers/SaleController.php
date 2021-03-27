@@ -9,6 +9,7 @@ use DB;
 use App\Models\SaleTablePay;
 use App\Models\Document;
 use App\Models\DocumentDetail;
+use App\Models\Expense;
 
 class SaleController extends Controller
 {
@@ -112,12 +113,14 @@ class SaleController extends Controller
             return redirect()->route('sales.view')->withErrors('Registro no encontrado');
         }
         $saleDetail = SalesTableDetail::join('products as p','p.id_product','sales_table_details.id_product')
+        ->join('users as s','s.id','sales_table_details.id_user')
         ->where('id_sale',$id)->get([
-            'sales_table_details.*','p.name as product','p.sale_price','p.code'
+            'sales_table_details.*','p.name as product','p.sale_price','p.code','s.name as user'
         ]);
         $nPay = SaleTablePay::where('id_sale',$id)->sum('payment');
         $saleTotal = SalesTableDetail::where('id_sale',$id)
             ->sum(DB::raw('price * quantity'));
+
         return view('sales.show',compact('sale','saleTotal','saleDetail','nPay'));
     }
     public function detailNew(Request $request){
@@ -412,9 +415,12 @@ class SaleController extends Controller
         $nPayment = Document::where('date_document',$date)->where('id_type','2')->sum('payment');
         // $nTotal = DocumentDetail::where(DB::raw('cast(created_at as date)'))
         $nTotal = Document::where('date_document',$date)->where('id_type','2')->sum('total');
-        $nDeuda = Document::where('date_document',$date)->where('id_type','2')->where(function($q){
-            $q->whereNull('payment')->orWhere('payment','<=','0');
-        })->sum('total');
+        $nDeuda = Document::where('date_document',$date)->where('id_type','2')
+        ->whereIn('id_status',[2,4,5])
+        ->where(function($q){
+            // $q->whereNull('payment')
+            $q->where('total','>','payment');
+        })->sum(DB::raw('total - payment'));
 
         return view('produced.index',compact('nPayment','nTotal','nDeuda','date'));
     }
@@ -422,5 +428,32 @@ class SaleController extends Controller
         $oDocument = Document::find($id);
         $oDocument->delete();
         return redirect()->route('sales_run.view');
+    }
+    public function indexProducedFilter(Request $request){
+        $type = $request->type;
+        $date = date('Y-m');
+        $formatDoc = DB::raw("DATE_FORMAT(date_document,'%Y-%m')");
+        $formatExpense = DB::raw("DATE_FORMAT(expense_date,'%Y-%m')");
+        if($type == 'day'){
+            $date = date('Y-m-d');
+            $formatDoc = DB::raw("DATE_FORMAT(date_document,'%Y-%m-%d')");
+            $formatExpense = DB::raw("DATE_FORMAT(expense_date,'%Y-%m-%d')");
+        }elseif($type == 'year'){
+            $date = date('Y');
+            $formatDoc = DB::raw("DATE_FORMAT(date_document,'%Y')");
+            $formatExpense = DB::raw("DATE_FORMAT(expense_date,'%Y')");
+        }
+        // dd($date);
+        $nPayment = Document::where($formatDoc,$date)->where('id_type','2')->sum('payment');
+        $nIncome = Document::where($formatDoc,$date)->where('id_type','1')->sum('total');
+        $nExpense = Expense::where($formatExpense,$date)->sum(DB::raw('quantity * price'));
+        $nDeuda = Document::where($formatDoc,$date)->where('id_type','2')
+        ->whereIn('id_status',[2,4,5])
+        ->where(function($q){
+            // $q->whereNull('payment')
+            $q->where('total','>','payment');
+        })->sum(DB::raw('total - payment'));
+        // dd($nIncome,$nExpense,$nPayment,$nDeuda);
+        return view('produced.indexFilter',compact('nIncome','nExpense','nDeuda','nPayment','date','type'));
     }
 }
