@@ -10,6 +10,7 @@ use App\Models\SaleTablePay;
 use App\Models\Document;
 use App\Models\DocumentDetail;
 use App\Models\Expense;
+use Carbon\Carbon;
 
 class SaleController extends Controller
 {
@@ -431,16 +432,23 @@ class SaleController extends Controller
         return redirect()->route('sales_run.view');
     }
     public function indexProducedFilter(Request $request){
+        $sDate = new Carbon($request->date_expense);
+        $dDate = $request->date_expense;
+        if(is_null($request->date_expense)){
+            $sDate = Carbon::now();
+            $dDate = $sDate->format('Y-m-d');
+            // $sDate = $sDate->format('Y-m-d');
+        }
         $type = $request->type;
-        $date = date('Y-m');
+        $date = $sDate->format('Y-m');
         $formatDoc = DB::raw("DATE_FORMAT(date_document,'%Y-%m')");
         $formatExpense = DB::raw("DATE_FORMAT(expense_date,'%Y-%m')");
         if($type == 'day'){
-            $date = date('Y-m-d');
+            $date = $sDate->format('Y-m-d');
             $formatDoc = DB::raw("DATE_FORMAT(date_document,'%Y-%m-%d')");
             $formatExpense = DB::raw("DATE_FORMAT(expense_date,'%Y-%m-%d')");
         }elseif($type == 'year'){
-            $date = date('Y');
+            $date = $sDate->format('Y');
             $formatDoc = DB::raw("DATE_FORMAT(date_document,'%Y')");
             $formatExpense = DB::raw("DATE_FORMAT(expense_date,'%Y')");
         }
@@ -455,6 +463,6 @@ class SaleController extends Controller
             $q->where('total','>','payment');
         })->sum(DB::raw('total - payment'));
         // dd($nIncome,$nExpense,$nPayment,$nDeuda);
-        return view('produced.indexFilter',compact('nIncome','nExpense','nDeuda','nPayment','date','type'));
+        return view('produced.indexFilter',compact('nIncome','nExpense','nDeuda','nPayment','date','type','dDate'));
     }
 }

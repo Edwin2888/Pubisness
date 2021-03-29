@@ -17,6 +17,15 @@
                             <div class="row">
                                 <div class="col-md-12 col-lg-12 col-xs-12 col-sm-12">
                                     <div class="form-group">
+                                        <input type="date" value="{{ $dDate }}" name="date_expense" class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="row">
+                                <div class="col-md-12 col-lg-12 col-xs-12 col-sm-12">
+                                    <div class="form-group">
                                         <select name="type" class="form-control">
                                             <option {{ ($type == 'month' ? 'selected' : '' )  }} value="month">Mensual</option>
                                             {{-- <option {{ ($type == 'week' ? 'selected' : '' )  }} value="week">Semanal</option> --}}
