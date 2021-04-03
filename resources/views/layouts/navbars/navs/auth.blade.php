@@ -58,10 +58,18 @@
                         <li class="nav-link">
                             <a href="{{ route('inventory.view') }}" class="nav-item dropdown-item">{{ __('Inventario') }}</a>
                         </li>
+                        <li class="nav-link">
+                            <a href="{{ route('producedFilter.view') }}" class="nav-item dropdown-item">{{ __('Balance') }}</a>
+                        </li>
                         @endif
                         @if(@Auth::user()->hasPermissionTo('gastos_permission'))
                         <li class="nav-link">
                             <a href="{{ route('expense.view') }}" class="nav-item dropdown-item">{{ __('Gastos') }}</a>
+                        </li>
+                        @endif
+                        @if(@Auth::user()->hasPermissionTo('sales_permission'))
+                        <li class="nav-link">
+                            <a href="{{ route('produced.view') }}" class="nav-item dropdown-item">{{ __('Producido') }}</a>
                         </li>
                         @endif
                     </ul>

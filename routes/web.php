@@ -46,8 +46,10 @@ Route::group(['middleware' => 'auth'], function() {
 
         Route::prefix('/produced')->group(function () {
             Route::get('/','SaleController@indexProduced')->name('produced.view');
-            Route::get('/filter','SaleController@indexProducedFilter')->name('producedFilter.view');
-            Route::post('/filter','SaleController@indexProducedFilter')->name('producedFilter.view');
+            Route::group(['middleware' => ['permission:inventory_permission']], function() {
+                Route::get('/filter','SaleController@indexProducedFilter')->name('producedFilter.view');
+                Route::post('/filter','SaleController@indexProducedFilter')->name('producedFilter.view');
+            });
         });
     });
     Route::group(['middleware' => ['permission:product_permission']], function() {
