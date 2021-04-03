@@ -17,7 +17,7 @@ class ExpenseController extends Controller
     {
         $oExpense = Expense::leftJoin('expense_types as t','t.id_type_expense','expenses.id_type_expense')
         ->select('expenses.expense_date','expenses.name','expenses.price','expenses.quantity',
-        't.name as type','expenses.created_at','expenses.updated_at')
+        't.name as type','expenses.created_at','expenses.updated_at','expenses.id_expense')
         ->get();
         return view('expenses.index',compact('oExpense'));
     }
@@ -144,5 +144,14 @@ class ExpenseController extends Controller
     public function new(){
         $oTypes = ExpenseType::get();
         return view('expenses.new',compact('oTypes'));
+    }
+    public function delete(Request $request){
+        $aMsg = array();
+
+        $oExpense = Expense::find($request->id_auto);
+        $oExpense->delete();
+
+        $aMsg['success'] = 'Registro eliminado';
+        return response()->json($aMsg);
     }
 }

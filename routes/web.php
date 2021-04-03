@@ -98,6 +98,7 @@ Route::group(['middleware' => 'auth'], function() {
             Route::get('/','ExpenseController@index')->name('expense.view');
             Route::get('/new','ExpenseController@new')->name('expense.new');
             Route::post('/create','ExpenseController@create')->name('expense.create');
+            Route::post('/delete','ExpenseController@delete')->name('expense.delete');
         });
     });
 

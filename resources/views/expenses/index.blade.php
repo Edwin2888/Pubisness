@@ -63,7 +63,7 @@
                                             <td>{{ (is_null($value->type) ? 'NO' : $value->type ) }}</td>
                                             <td>{{ $value->created_at }}</td>
                                             <td>{{ $value->updated_at }}</td>
-                                            <td></td>
+                                            <td><a href="javascript:void(0)" onclick="deleteItem('{{ $value->id_expense }}')" class="btn btn-link btn-danger btn-icon btn-sm remove"><i class="tim-icons icon-simple-remove"></i></a></td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -76,6 +76,32 @@
     </div>
 @endsection
 @section('js')
+<script>
+    function deleteItem(_idAuto){
+        $("#loading-open").addClass('loading-head');
+            $.ajax({
+                type: "POST",
+                url: "{{ route('expense.delete') }}",
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    id_auto: _idAuto
+                },
+                dataType: "jSon",
+                success: function (response) {
+                    $("#loading-open").removeClass('loading-head');
+                    if(response.error){
+                        alert(response.error);
+                    }
+                    if(response.success){
+                        location.reload();
+                    }
+                },error: function(){
+                    $("#loading-open").removeClass('loading-head');
+                    alert('Error');
+                }
+            });
+    }
+</script>
 <script src="{{ asset('black') }}/js/lib/data-table/datatables.min.js"></script>
 <script src="{{ asset('black') }}/js/lib/data-table/dataTables.bootstrap.min.js"></script>
 <script src="{{ asset('black') }}/js/lib/data-table/dataTables.buttons.min.js"></script>
